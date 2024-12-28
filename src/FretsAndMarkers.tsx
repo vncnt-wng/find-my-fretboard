@@ -94,17 +94,28 @@ const stringSpacingStyle: CSSProperties = {
   boxSizing: 'border-box'
 }
 
-const Strings = ({ numStrings }: { numStrings: number }): ReactElement => {
+const Strings = ({ numStrings, hover }: { numStrings: number, hover?: boolean }): ReactElement => {
+
   return (
     <div style={fretboardOverlayStyle}>
       <div style={stringSpacingStyle}>
         {...[...Array(numStrings)].map(_ =>
-          <div
-            style={{ height: '0.1rem', width: '100%', backgroundColor: 'black', boxSizing: 'content-box' }}
-          />
+          <String />
         )}
       </div>
     </div >
+  )
+}
+
+const String =  () => {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{ height: '0.1rem', width: '100%', backgroundColor: hover ? 'red' : 'black', backgroundClip: 'content-box', padding:'0.2rem 0' }}
+    />
   )
 }
 
