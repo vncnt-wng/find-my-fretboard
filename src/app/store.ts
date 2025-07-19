@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import fretboardSettingsReducer from '../Fretboard/Slices/fretboardSettings'
+import fretboardSettingsReducer from '../Components/Fretboard/Slices/fretboardSettings'
 
 export const store = configureStore({
   reducer: {

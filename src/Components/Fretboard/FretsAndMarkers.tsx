@@ -1,6 +1,6 @@
 import { ReactElement, useState, useRef, useEffect, CSSProperties } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../app/store";
+import { RootState } from "../../app/store";
 
 const fretboardOverlayStyle: CSSProperties = {
   position: 'absolute',
