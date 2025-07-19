@@ -1,4 +1,6 @@
 import { ReactElement, useState, useRef, useEffect, CSSProperties } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 const fretboardOverlayStyle: CSSProperties = {
   position: 'absolute',
@@ -10,7 +12,7 @@ const FretsAndMarkers = ({ numStrings }: { numStrings: number }): ReactElement =
   const widthRef = useRef<HTMLDivElement>(null);
   const [noteWidths, setNoteWidths] = useState<number[]>([]);
 
-  const constWidthFrets = false;
+  const constWidthFrets = useSelector((state: RootState) => state.fretboardSettings.constFretSpacing);
 
   useEffect(() => {
     if (widthRef.current?.offsetWidth) {
@@ -36,7 +38,7 @@ const FretsAndMarkers = ({ numStrings }: { numStrings: number }): ReactElement =
         setNoteWidths(widths);
       }
     }
-  }, [widthRef.current?.offsetWidth]);
+  }, [widthRef.current?.offsetWidth, constWidthFrets]);
 
   const fretIndicies = [2, 4, 6, 8];
 
