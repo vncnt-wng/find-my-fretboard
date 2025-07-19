@@ -3,9 +3,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import StringNames from './StringNames';
 import FretsAndMarkers from './FretsAndMarkers';
+import { initialiseFretboardMapping } from '../../MusicModel/model';
 
 const Fretboard = (): ReactElement => {
   const numStrings = useSelector((state: RootState) => state.fretboardSettings.stringNum);
+  const fretboardMapping = initialiseFretboardMapping(numStrings, 24);
+
+  console.log(fretboardMapping);
 
   const fretboardStyle: CSSProperties = {
     backgroundColor: 'navajowhite',

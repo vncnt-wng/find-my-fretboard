@@ -1,0 +1,104 @@
+export enum NoteName {
+  C = 0,
+  C_SHARP = 1,
+  D = 2,
+  D_SHARP = 3,
+  E = 4,
+  F = 5,
+  F_SHARP = 6,
+  G = 7,
+  G_SHARP = 8,
+  A = 9,
+  A_SHARP = 10,
+  B = 11
+}
+
+export const NoteNameToStringMapping = {
+  [NoteName.C]: 'C',
+  [NoteName.C_SHARP]: 'C#',
+  [NoteName.D]: 'D',
+  [NoteName.D_SHARP]: 'D#',
+  [NoteName.E]: 'E',
+  [NoteName.F]: 'F',
+  [NoteName.F_SHARP]: 'F#',
+  [NoteName.G]: 'G',
+  [NoteName.G_SHARP]: 'G#',
+  [NoteName.A]: 'A',
+  [NoteName.A_SHARP]: 'A#',
+  [NoteName.B]: 'B',
+}
+
+export interface Note {
+  name: NoteName;
+  octave: number;
+}
+
+export interface StringIndex {
+  openString: Note;
+  index: number;
+}
+
+export const nextNote = (note: Note): Note => {
+  const nextName = (note.name + 1) % 12;
+  const nextOctave = nextName === NoteName.C ? note.octave + 1 : note.octave;
+  return { name: nextName, octave: nextOctave };
+};
+
+export const noteHash = (note: Note): string => {
+  return `${note.name}-${note.octave}`
+}
+
+export const noteEq = (note1: Note, note2: Note) => {
+  return note1.name === note2.name && note1.octave === note2.octave;
+}
+
+export const getOpenStringNotes = (numStrings: number): Note[] => {
+  var openStrings: Note[] = [
+    { name: NoteName.E, octave: 1 },
+    { name: NoteName.A, octave: 1 },
+    { name: NoteName.D, octave: 2 },
+    { name: NoteName.G, octave: 2 },
+  ];
+
+  if (numStrings >= 5) {
+    openStrings = [{ name: NoteName.B, octave: 2 }, ...openStrings];
+  }
+  if (numStrings >= 6) {
+    openStrings = [...openStrings, { name: NoteName.C, octave: 3 }];
+  }
+
+  return openStrings;
+}
+
+export interface FretboardMapping {
+  notesByString: Note[][]
+  // key is a string created by note, in lieu of proper hashing in ts
+  stringIndiciesByNote: Map<string, StringIndex[]>
+}
+
+export const initialiseFretboardMapping = (numStrings: number, numFrets: number): FretboardMapping => {
+  const openStrings = getOpenStringNotes(numStrings);
+  const stringIndicies = new Map<string, StringIndex[]>();
+  const fretboardNotes: Note[][] = openStrings
+    .map((openString) => {
+      const stringNotes: Note[] = [openString]
+      var current = openString;
+      for (var i = 1; i < numFrets; i++) {
+        current = nextNote(current);
+        stringNotes.push(current);
+        var key = noteHash(current);
+        if (stringIndicies.has(key)) {
+          stringIndicies.get(key)!.push({ openString, index: i })
+        } 
+        else {
+          stringIndicies.set(key, [{ openString, index: i }])
+        }
+      }
+      return stringNotes;
+  });
+
+  return {
+    notesByString: fretboardNotes,
+    stringIndiciesByNote: stringIndicies
+  };
+}

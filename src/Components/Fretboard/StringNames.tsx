@@ -1,4 +1,5 @@
-import { useMemo, CSSProperties } from 'react'
+import { CSSProperties } from 'react'
+import { getOpenStringNotes, NoteNameToStringMapping } from '../../MusicModel/model'
 
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
@@ -11,18 +12,7 @@ const stringSpacingStyle: CSSProperties = {
 }
 
 const StringNames = ({ numStrings }: { numStrings: number }) => {
-
-  const names: string[] = useMemo(() => {
-    // TODO - this kind of logic will need to be refactored once we get into the playback stuff
-    let result: string[] = ['E', 'A', 'D', 'G'];
-    if (numStrings >= 5)
-      result = ['B', ...result];
-    if (numStrings >= 6)
-      result = [...result, 'C'];
-    return result.reverse();
-  }, [numStrings])
-
-  console.log(names)
+  const names = getOpenStringNotes(numStrings).map(n => NoteNameToStringMapping[n.name]).reverse();
 
   return (
     <div style={{
