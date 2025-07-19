@@ -81,10 +81,9 @@ export const initialiseFretboardMapping = (numStrings: number, numFrets: number)
   const stringIndicies = new Map<string, StringIndex[]>();
   const fretboardNotes: Note[][] = openStrings
     .map((openString) => {
-      const stringNotes: Note[] = [openString]
+      const stringNotes: Note[] = []
       var current = openString;
-      for (var i = 1; i < numFrets; i++) {
-        current = nextNote(current);
+      for (var i = 0; i <= numFrets; i++) {
         stringNotes.push(current);
         var key = noteHash(current);
         if (stringIndicies.has(key)) {
@@ -93,6 +92,7 @@ export const initialiseFretboardMapping = (numStrings: number, numFrets: number)
         else {
           stringIndicies.set(key, [{ openString, index: i }])
         }
+        current = nextNote(current);
       }
       return stringNotes;
   });
