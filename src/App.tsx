@@ -1,5 +1,5 @@
 import { useMemo, CSSProperties, ReactElement } from 'react'
-import FretsAndMarkers from './FretsAndMarkers';
+import FretsAndMarkers from './Fretboard/FretsAndMarkers';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
