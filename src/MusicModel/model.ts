@@ -61,7 +61,7 @@ export const getOpenStringNotes = (numStrings: number): Note[] => {
   ];
 
   if (numStrings >= 5) {
-    openStrings = [{ name: NoteName.B, octave: 2 }, ...openStrings];
+    openStrings = [{ name: NoteName.B, octave: 0 }, ...openStrings];
   }
   if (numStrings >= 6) {
     openStrings = [...openStrings, { name: NoteName.C, octave: 3 }];
