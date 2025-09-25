@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import StringNames from './StringNames';
 import FretboardOverlay from './FretboardOverlay';
-import { initialiseFretboardMapping } from '../../MusicModel/model';
 
 const Fretboard = (): ReactElement => {
   const numStrings = useSelector((state: RootState) => state.fretboardSettings.stringNum);

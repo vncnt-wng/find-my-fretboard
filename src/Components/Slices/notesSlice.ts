@@ -1,26 +1,32 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NoteName, NoteNameToStringMapping, Note, StringIndex, noteEq } from '../../MusicModel/model';
+import { NoteName, NoteNameToStringMapping, Note, StringPosition, noteEq, FretboardNote, stringPositionEq } from '../../MusicModel/model';
 
 interface NoteState {
-  selectedNotes: Note[],
+  selectedNotes: FretboardNote[],
 }
 
 const initialState: NoteState = {
   selectedNotes: []
 }
 
-const setSingleNoteReducer = (state: NoteState, note: PayloadAction<Note>) => {
+const setSingleNoteReducer = (state: NoteState, note: PayloadAction<FretboardNote>) => {
   state.selectedNotes = [note.payload];
 }
 
-const setHeldNoteReducer = (state: NoteState, note: PayloadAction<Note>) => {
-  const matchIndex = state.selectedNotes.findIndex(n => noteEq(n, note.payload));
-  if (matchIndex == -1) {
+const setHeldNoteReducer = (state: NoteState, note: PayloadAction<FretboardNote>) => {
+  const matchStringIndex = state.selectedNotes.findIndex(
+    n => noteEq(n.stringPos.openString, note.payload.stringPos.openString)
+  );
+  if (matchStringIndex == -1) {
     state.selectedNotes.push(note.payload);
   } 
   else
   {
-    state.selectedNotes.splice(matchIndex, 1);
+    const matchStringPos = state.selectedNotes[matchStringIndex].stringPos;
+    state.selectedNotes.splice(matchStringIndex, 1);
+    if (!stringPositionEq(note.payload.stringPos, matchStringPos)) {
+      state.selectedNotes.push(note.payload)
+    }
   }
 }
 

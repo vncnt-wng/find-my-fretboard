@@ -33,9 +33,14 @@ export interface Note {
   octave: number;
 }
 
-export interface StringIndex {
+export interface StringPosition {
   openString: Note;
   index: number;
+}
+
+export interface FretboardNote {
+  note: Note;
+  stringPos: StringPosition
 }
 
 export const nextNote = (note: Note): Note => {
@@ -48,11 +53,17 @@ export const noteHash = (note: Note): string => {
   return `${note.name}-${note.octave}`
 }
 
-export const noteEq = (note1: Note, note2: Note) => {
+export const noteEq = (note1: Note, note2: Note): boolean => {
   return note1.name === note2.name && note1.octave === note2.octave;
 }
 
-export const noteCmp = (note1: Note, note2: Note) => {
+// export const noteAdd = (note: Note, semis: number): Note => {
+//   const newName = (note.name + semis) % 12;
+//   const next
+//   const newOctave = 
+// }
+
+export const noteCmp = (note1: Note, note2: Note): number => {
   if (note1.octave > note2.octave) {
     return 1;
   } else if (note1.octave < note2.octave) {
@@ -60,6 +71,18 @@ export const noteCmp = (note1: Note, note2: Note) => {
   } else {
     return note1.name >= note2.name ? 1 : -1;
   }
+}
+
+export const notesContain = (note: Note, list: Note[]): boolean => {
+  return list.findIndex(n => noteEq(note, n)) != -1;
+}
+
+export const stringPositionEq = (sp1: StringPosition, sp2: StringPosition): boolean => {
+  return sp1.index == sp2.index && noteEq(sp1.openString, sp2.openString);
+}
+
+export const stringPositionsContain = (stringPos: StringPosition, list: StringPosition[]): boolean => {
+  return list.findIndex(si => stringPositionEq(si, stringPos)) != -1;
 }
 
 export const getOpenStringNotes = (numStrings: number): Note[] => {
@@ -81,16 +104,17 @@ export const getOpenStringNotes = (numStrings: number): Note[] => {
 }
 
 export interface FretboardMapping {
+  openStrings: Note[],
   // two below are same data, just rotated 
   indexNotesByString: Note[][]
   stringNotesByIndex: Note[][]
   // key is a string created by note, in lieu of proper hashing in ts
-  stringIndiciesByNote: Map<string, StringIndex[]>
+  stringPosByNote: Map<string, StringPosition[]>
 }
 
 export const initialiseFretboardMapping = (numStrings: number, numFrets: number): FretboardMapping => {
   const openStrings = getOpenStringNotes(numStrings);
-  const stringIndicies = new Map<string, StringIndex[]>();
+  const stringIndicies = new Map<string, StringPosition[]>();
 
   const indexNotesByString: Note[][] = openStrings
     .map((openString) => {
@@ -120,8 +144,9 @@ export const initialiseFretboardMapping = (numStrings: number, numFrets: number)
   }
 
   return {
+    openStrings: openStrings,
     indexNotesByString: indexNotesByString,
     stringNotesByIndex: stringNotesByIndex,
-    stringIndiciesByNote: stringIndicies
+    stringPosByNote: stringIndicies
   };
 }

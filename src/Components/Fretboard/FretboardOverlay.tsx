@@ -2,7 +2,7 @@ import { ReactElement, useState, useRef, useEffect, CSSProperties } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { setSingleNote, setHeldNote } from '../Slices/notesSlice';
-import { initialiseFretboardMapping, Note } from '../../MusicModel/model';
+import { FretboardNote, initialiseFretboardMapping, Note, noteHash, notesContain, StringPosition, stringPositionsContain } from '../../MusicModel/model';
   
 const fretboardOverlayStyle: CSSProperties = {
   position: 'absolute',
@@ -13,9 +13,8 @@ const fretboardOverlayStyle: CSSProperties = {
 const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement => {
   const widthRef = useRef<HTMLDivElement>(null);
   const [noteWidths, setNoteWidths] = useState<number[]>([]);
-  const fretboardMapping = initialiseFretboardMapping(numStrings, 24);
-
-  const constWidthFrets = useSelector((state: RootState) => state.fretboardSettings.constFretSpacing);
+  const fretboardSettings = useSelector((state: RootState) => state.fretboardSettings);
+  const { fretboardMapping, constFretSpacing } = fretboardSettings;
 
   useEffect(() => {
     if (widthRef.current?.offsetWidth) {
@@ -26,7 +25,7 @@ const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement 
       const widths: number[] = [];
       const noteStringLengths: number[] = [currentNoteStringLength];
       for (var i = 1; i <= 24; i++) {
-        if (constWidthFrets) {
+        if (constFretSpacing) {
           widths.push(divWidth / 24)
         } else {
           // f = c/(2L) -- c is some constant we don't care about 
@@ -41,7 +40,7 @@ const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement 
         setNoteWidths(widths);
       }
     }
-  }, [widthRef.current?.offsetWidth, constWidthFrets]);
+  }, [widthRef.current?.offsetWidth, constFretSpacing]);
 
   const fretMarkerIndicies = [2, 4, 6, 8];
 
@@ -66,6 +65,7 @@ const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement 
             <StringSegments 
               numStrings={numStrings} 
               indexNotes={fretboardMapping.stringNotesByIndex[i+1]}
+              fret={i+1}
             />
             {(i + 1) % 12 === 0
               ?
@@ -96,33 +96,38 @@ const stringSpacingStyle: CSSProperties = {
   boxSizing: 'border-box'
 }
 
-const StringSegments = ({ numStrings, indexNotes }: { numStrings: number, indexNotes: Note[] }): ReactElement => {
+const StringSegments = ({ numStrings, indexNotes, fret }: { numStrings: number, indexNotes: Note[], fret: number }): ReactElement => {
 
   return (
     <div style={fretboardOverlayStyle}>
       <div style={stringSpacingStyle}>
-        {...[...Array(numStrings)].map((_, i) =>
-          <StringSegment note={indexNotes[indexNotes.length - 1 - i]}/>
-        )}
+        {...[...Array(numStrings)].map((_, i) => {
+          const openIndex = indexNotes.length - 1 - i;
+          return (
+            <StringSegment note={indexNotes[openIndex]} stringIndex={openIndex} fret={fret}/>
+          )
+        })}
       </div>
     </div >
   )
 }
 
-const StringSegment =  ({ note }: { note: Note }) => {
-  // need current note here
-
+const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: number, fret: number}) => {
   const [hover, setHover] = useState(false);
-  const hold = useSelector((state: RootState) => state.fretboardSettings.hold)
+
+  const { fretboardMapping, hold } = useSelector((state: RootState) => state.fretboardSettings);
+  const stringPos: StringPosition = { openString: fretboardMapping.openStrings[stringIndex], index: fret}
+  const fretboardNote: FretboardNote = { note: note, stringPos: stringPos };
   const heldNotes = useSelector((state: RootState) => state.noteStateReducer.selectedNotes)
+  const isHeld = stringPositionsContain(stringPos, heldNotes.map(fretNote => fretNote.stringPos))
   const dispatch = useDispatch();
 
   const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
     console.log(note)
     if (hold) {
-      dispatch(setHeldNote(note));
+      dispatch(setHeldNote(fretboardNote));
     } else {
-      dispatch(setSingleNote(note));
+      dispatch(setSingleNote(fretboardNote));
     }
   }
 
@@ -131,7 +136,7 @@ const StringSegment =  ({ note }: { note: Note }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={setNote}
-      style={{ height: '1px', width: '100%', backgroundColor: hover ? 'red' : 'black', backgroundClip: 'content-box', padding:'0.3rem 0' }}
+      style={{ height: isHeld ? '2px': '1px', width: '100%', backgroundColor: hover || isHeld ? 'red' : 'black', backgroundClip: 'content-box', padding:'0.3rem 0' }}
     />
   )
 }

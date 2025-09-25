@@ -1,12 +1,25 @@
-fix string styling - frets displaying over strings 
-
-nicer/clearer string hover
-figure out pixel widths/what to do for strings 
 
 
 desired funcs - 
-- hover? or click on string fret selects note, shows note 
+- hover? or click on string fret selects note, shows note - done
 - play button to play current selected 
-- option to hold 
+- option to hold - done 
 - be able to load, transpose, play midi files
   - midi scrubbing, speed control 
+
+
+extensions - 
+- custom tunings - should be easy enough
+
+
+
+refinements
+- also notes should be be able to show what string they are on (subscript)
+- we should be able to show where repeated notes are on the fretboard but only behind an option
+- figure out 0 fret 
+- styling
+  - fix string styling - frets displaying over strings 
+  - nicer/clearer string hover
+  - figure out pixel widths/what to do for strings 
+  - string centering
+- good lord cleanup how we pass note information down to StringSegment
