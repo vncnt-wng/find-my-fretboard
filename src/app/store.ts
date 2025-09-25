@@ -1,9 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import fretboardSettingsReducer from '../Components/Fretboard/Slices/fretboardSettings'
+import fretboardSettingsReducer from '../Components/Slices/fretboardSettingsSlice'
+import noteStateReducer from '../Components/Slices/notesSlice';
+
 
 export const store = configureStore({
   reducer: {
-    fretboardSettings: fretboardSettingsReducer
+    fretboardSettings: fretboardSettingsReducer,
+    noteStateReducer: noteStateReducer
   }
 })
 

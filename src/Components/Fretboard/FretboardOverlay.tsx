@@ -1,16 +1,19 @@
 import { ReactElement, useState, useRef, useEffect, CSSProperties } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../app/store";
-
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../app/store';
+import { setSingleNote, setHeldNote } from '../Slices/notesSlice';
+import { initialiseFretboardMapping, Note } from '../../MusicModel/model';
+  
 const fretboardOverlayStyle: CSSProperties = {
   position: 'absolute',
   width: '100%',
   height: '100%'
 }
 
-const FretsAndMarkers = ({ numStrings }: { numStrings: number }): ReactElement => {
+const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement => {
   const widthRef = useRef<HTMLDivElement>(null);
   const [noteWidths, setNoteWidths] = useState<number[]>([]);
+  const fretboardMapping = initialiseFretboardMapping(numStrings, 24);
 
   const constWidthFrets = useSelector((state: RootState) => state.fretboardSettings.constFretSpacing);
 
@@ -40,7 +43,7 @@ const FretsAndMarkers = ({ numStrings }: { numStrings: number }): ReactElement =
     }
   }, [widthRef.current?.offsetWidth, constWidthFrets]);
 
-  const fretIndicies = [2, 4, 6, 8];
+  const fretMarkerIndicies = [2, 4, 6, 8];
 
   return (
     <div ref={widthRef} style={{ ...fretboardOverlayStyle, display: 'flex', flexDirection: 'row' }}>
@@ -60,14 +63,17 @@ const FretsAndMarkers = ({ numStrings }: { numStrings: number }): ReactElement =
               position: 'relative',
               boxSizing: 'border-box'
             }}>
-            <Strings numStrings={numStrings} />
+            <StringSegments 
+              numStrings={numStrings} 
+              indexNotes={fretboardMapping.stringNotesByIndex[i+1]}
+            />
             {(i + 1) % 12 === 0
               ?
               <>
                 <Dot />
                 <Dot />
               </>
-              : fretIndicies.includes(i % 12)
+              : fretMarkerIndicies.includes(i % 12)
                 ? <Dot />
                 : <></>}
           </div>
@@ -80,12 +86,6 @@ const FretsAndMarkers = ({ numStrings }: { numStrings: number }): ReactElement =
 const Dot = () => <span style={{ borderRadius: '100%', width: '0.4rem', height: '0.4rem', backgroundColor: 'black' }} />
 
 
-// const fretboardOverlayStyle: CSSProperties = {
-//   position: 'absolute',
-//   width: '100%',
-//   height: '100%'
-// }
-
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
   height: '100%',
@@ -96,29 +96,44 @@ const stringSpacingStyle: CSSProperties = {
   boxSizing: 'border-box'
 }
 
-const Strings = ({ numStrings }: { numStrings: number, }): ReactElement => {
+const StringSegments = ({ numStrings, indexNotes }: { numStrings: number, indexNotes: Note[] }): ReactElement => {
 
   return (
     <div style={fretboardOverlayStyle}>
       <div style={stringSpacingStyle}>
-        {...[...Array(numStrings)].map(_ =>
-          <String />
+        {...[...Array(numStrings)].map((_, i) =>
+          <StringSegment note={indexNotes[indexNotes.length - 1 - i]}/>
         )}
       </div>
     </div >
   )
 }
 
-const String =  () => {
+const StringSegment =  ({ note }: { note: Note }) => {
+  // need current note here
+
   const [hover, setHover] = useState(false);
+  const hold = useSelector((state: RootState) => state.fretboardSettings.hold)
+  const heldNotes = useSelector((state: RootState) => state.noteStateReducer.selectedNotes)
+  const dispatch = useDispatch();
+
+  const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log(note)
+    if (hold) {
+      dispatch(setHeldNote(note));
+    } else {
+      dispatch(setSingleNote(note));
+    }
+  }
 
   return (
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      onClick={setNote}
       style={{ height: '1px', width: '100%', backgroundColor: hover ? 'red' : 'black', backgroundClip: 'content-box', padding:'0.3rem 0' }}
     />
   )
 }
 
-export default FretsAndMarkers;
+export default FretboardOverlay;

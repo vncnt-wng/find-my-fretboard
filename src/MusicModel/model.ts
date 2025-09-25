@@ -52,6 +52,16 @@ export const noteEq = (note1: Note, note2: Note) => {
   return note1.name === note2.name && note1.octave === note2.octave;
 }
 
+export const noteCmp = (note1: Note, note2: Note) => {
+  if (note1.octave > note2.octave) {
+    return 1;
+  } else if (note1.octave < note2.octave) {
+    return -1;
+  } else {
+    return note1.name >= note2.name ? 1 : -1;
+  }
+}
+
 export const getOpenStringNotes = (numStrings: number): Note[] => {
   var openStrings: Note[] = [
     { name: NoteName.E, octave: 1 },
@@ -71,7 +81,9 @@ export const getOpenStringNotes = (numStrings: number): Note[] => {
 }
 
 export interface FretboardMapping {
-  notesByString: Note[][]
+  // two below are same data, just rotated 
+  indexNotesByString: Note[][]
+  stringNotesByIndex: Note[][]
   // key is a string created by note, in lieu of proper hashing in ts
   stringIndiciesByNote: Map<string, StringIndex[]>
 }
@@ -79,7 +91,8 @@ export interface FretboardMapping {
 export const initialiseFretboardMapping = (numStrings: number, numFrets: number): FretboardMapping => {
   const openStrings = getOpenStringNotes(numStrings);
   const stringIndicies = new Map<string, StringIndex[]>();
-  const fretboardNotes: Note[][] = openStrings
+
+  const indexNotesByString: Note[][] = openStrings
     .map((openString) => {
       const stringNotes: Note[] = []
       var current = openString;
@@ -97,8 +110,18 @@ export const initialiseFretboardMapping = (numStrings: number, numFrets: number)
       return stringNotes;
   });
 
+  const stringNotesByIndex: Note[][] = [];
+  for (var i = 0; i <= numFrets; i++) {
+    const fretNotes: Note[] = [];
+    stringNotesByIndex.push(fretNotes)
+    for (var j = 0; j < numStrings; j ++) {
+      fretNotes.push(indexNotesByString[j][i])
+    }
+  }
+
   return {
-    notesByString: fretboardNotes,
+    indexNotesByString: indexNotesByString,
+    stringNotesByIndex: stringNotesByIndex,
     stringIndiciesByNote: stringIndicies
   };
 }

@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import SettingsBar from './Components/SettingsBar';
 import Fretboard from './Components/Fretboard/FretBoard';
+import SelectedNotes from './Components/SelectedNotes';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
@@ -19,14 +20,13 @@ const pageContainerStyle: CSSProperties = {
 }
 
 const App = () => {
-  const noteName = 'B';
   return (
     <Provider store={store}>
       <SettingsBar />
       <div style={pageContainerStyle}>
         
-        <div style={{ fontSize: '3rem', textAlign: 'center' }}>{noteName}</div>
-        <Fretboard/>
+        <SelectedNotes />
+        <Fretboard />
       </div>
     </Provider>
   )

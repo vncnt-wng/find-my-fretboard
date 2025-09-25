@@ -1,1 +1,12 @@
 fix string styling - frets displaying over strings 
+
+nicer/clearer string hover
+figure out pixel widths/what to do for strings 
+
+
+desired funcs - 
+- hover? or click on string fret selects note, shows note 
+- play button to play current selected 
+- option to hold 
+- be able to load, transpose, play midi files
+  - midi scrubbing, speed control 

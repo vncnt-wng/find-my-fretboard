@@ -1,10 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { setFretSpacing, setStringNum } from '../Components/Fretboard/Slices/fretboardSettings';
+import { setFretSpacing, setStringNum, setHold } from './Slices/fretboardSettingsSlice';
 
 const SettingsBar = () => {
   const stringNum = useSelector((state: RootState) => state.fretboardSettings.stringNum);
   const fretboardSpacing = useSelector((state: RootState) => state.fretboardSettings.constFretSpacing);
+  const hold = useSelector((state: RootState) => state.fretboardSettings.hold);
   const dispatch = useDispatch();
 
   return (
@@ -20,6 +21,9 @@ const SettingsBar = () => {
         <option value="5">5</option>
         <option value="6">6</option>
         </select></div>
+      </div>
+      <div>
+          Hold notes: <input checked={hold} onChange={e => dispatch(setHold(e.target.checked))} type="checkbox" style={{ marginLeft: '1rem' }} />
       </div>
     </div>
   )
