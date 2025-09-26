@@ -53,6 +53,10 @@ export const noteHash = (note: Note): string => {
   return `${note.name}-${note.octave}`
 }
 
+export const noteString = (note: Note): string => {
+  return NoteNameToStringMapping[note.name] + note.octave.toString();
+}
+
 export const noteEq = (note1: Note, note2: Note): boolean => {
   return note1.name === note2.name && note1.octave === note2.octave;
 }
