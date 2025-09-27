@@ -10,11 +10,11 @@ const fretboardOverlayStyle: CSSProperties = {
   height: '100%'
 }
 
-const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement => {
+const FretboardOverlay = (): ReactElement => {
   const widthRef = useRef<HTMLDivElement>(null);
   const [noteWidths, setNoteWidths] = useState<number[]>([]);
   const fretboardSettings = useSelector((state: RootState) => state.fretboardSettings);
-  const { fretboardMapping, constFretSpacing } = fretboardSettings;
+  const { fretboardMapping, constFretSpacing, stringNum } = fretboardSettings;
 
   useEffect(() => {
     if (widthRef.current?.offsetWidth) {
@@ -61,7 +61,7 @@ const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement 
               boxSizing: 'border-box'
             }}>
             <StringSegments 
-              numStrings={numStrings} 
+              numStrings={stringNum} 
               indexNotes={fretboardMapping.stringNotesByIndex[i+1]}
               fret={i+1}
             />
@@ -102,7 +102,7 @@ const StringSegments = ({ numStrings, indexNotes, fret }: { numStrings: number, 
         {...[...Array(numStrings)].map((_, i) => {
           const openIndex = indexNotes.length - 1 - i;
           return (
-            <StringSegment note={indexNotes[openIndex]} stringIndex={openIndex} fret={fret}/>
+            <StringSegment key={i} note={indexNotes[openIndex]} stringIndex={openIndex} fret={fret}/>
           )
         })}
       </div>
@@ -114,10 +114,12 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
   const [hover, setHover] = useState(false);
 
   const { fretboardMapping, hold } = useSelector((state: RootState) => state.fretboardSettings);
-  const stringPos: StringPosition = { openString: fretboardMapping.openStrings[stringIndex], index: fret}
+  const openString = fretboardMapping.openStrings[stringIndex];
+  const stringPos: StringPosition = { openString: openString, index: fret}
   const fretboardNote: FretboardNote = { note: note, stringPos: stringPos };
-  const heldNotes = useSelector((state: RootState) => state.noteStateReducer.selectedNotes)
-  const isHeld = stringPositionsContain(stringPos, heldNotes.map(fretNote => fretNote.stringPos))
+  const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos)
+  const isHeld = stringPositionsContain(stringPos, heldPositions)
+  const openStringPlaying = stringPositionsContain({openString: openString, index: 0}, heldPositions);
   const dispatch = useDispatch();
 
   const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -133,8 +135,20 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={setNote}
-      style={{ height: isHeld ? '2px': '1px', width: '100%', backgroundColor: hover || isHeld ? 'red' : 'black', backgroundClip: 'content-box', padding:'0.3rem 0' }}
-    />
+      style={{height: '0.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
+    >
+      <div style={{ 
+        height: isHeld || openStringPlaying ? '2px': '1px', 
+        width: '100%', 
+        backgroundColor: hover || isHeld 
+          ? 'red' 
+          : openStringPlaying 
+            ? 'orange'
+            : 'black'
+        // padding:'0.3rem 0' 
+      }}/>
+    </div>
+      
   )
 }
 
