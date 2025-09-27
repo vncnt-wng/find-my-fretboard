@@ -23,8 +23,8 @@ const pageContainerStyle: CSSProperties = {
 const App = () => {
   return (
     <Provider store={store}>
-      <SettingsBar />
       <div style={pageContainerStyle}>
+        <SettingsBar />
         <Listeners/>
         <SelectedNotes />
         <Fretboard />

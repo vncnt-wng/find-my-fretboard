@@ -89,7 +89,15 @@ export const stringPositionsContain = (stringPos: StringPosition, list: StringPo
   return list.findIndex(si => stringPositionEq(si, stringPos)) != -1;
 }
 
-export const getOpenStringNotes = (numStrings: number): Note[] => {
+export const getOpenStringNotes = (instrument: Instrument, numStrings: number): Note[] => {
+  if (instrument === Instrument.BASS) {
+    return getBassOpenStrings(numStrings);
+  } else if (instrument === Instrument.GUITAR) {
+    return getGuitarOpenStrings(numStrings);
+  }
+}
+
+const getBassOpenStrings = (numStrings: number): Note[] => {
   var openStrings: Note[] = [
     { name: NoteName.E, octave: 1 },
     { name: NoteName.A, octave: 1 },
@@ -107,6 +115,23 @@ export const getOpenStringNotes = (numStrings: number): Note[] => {
   return openStrings;
 }
 
+const getGuitarOpenStrings = (numStrings: number): Note[] => {
+  var openStrings: Note[] = [
+    { name: NoteName.E, octave: 2 },
+    { name: NoteName.A, octave: 2 },
+    { name: NoteName.D, octave: 3 },
+    { name: NoteName.G, octave: 3 },
+    { name: NoteName.B, octave: 3 },
+    { name: NoteName.E, octave: 4 },
+  ];
+
+  if (numStrings >= 7) {
+    openStrings = [{ name: NoteName.B, octave: 1 }, ...openStrings];
+  }
+
+  return openStrings;
+}
+
 export interface FretboardMapping {
   openStrings: Note[],
   // two below are same data, just rotated 
@@ -116,8 +141,8 @@ export interface FretboardMapping {
   stringPosByNote: Map<string, StringPosition[]>
 }
 
-export const initialiseFretboardMapping = (numStrings: number, numFrets: number): FretboardMapping => {
-  const openStrings = getOpenStringNotes(numStrings);
+export const initialiseFretboardMapping = (instrument: Instrument, numStrings: number, numFrets: number): FretboardMapping => {
+  const openStrings = getOpenStringNotes(instrument, numStrings);
   const stringIndicies = new Map<string, StringPosition[]>();
 
   const indexNotesByString: Note[][] = openStrings
@@ -153,4 +178,15 @@ export const initialiseFretboardMapping = (numStrings: number, numFrets: number)
     stringNotesByIndex: stringNotesByIndex,
     stringPosByNote: stringIndicies
   };
+}
+
+
+export enum Instrument {
+  GUITAR = 0,
+  BASS = 1
+}
+
+export const InstrumentToStringNumRange = {
+  [Instrument.GUITAR]: [6, 7],
+  [Instrument.BASS]: [4, 6]
 }

@@ -2,7 +2,7 @@ import { ReactElement, useState, useRef, useEffect, CSSProperties } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { setSingleNote, setHeldNote } from '../Slices/notesSlice';
-import { FretboardNote, initialiseFretboardMapping, Note, noteHash, notesContain, StringPosition, stringPositionsContain } from '../../MusicModel/model';
+import { FretboardNote, Note,  StringPosition, stringPositionsContain } from '../../MusicModel/model';
   
 const fretboardOverlayStyle: CSSProperties = {
   position: 'absolute',

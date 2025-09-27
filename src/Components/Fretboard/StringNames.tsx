@@ -1,5 +1,7 @@
 import { CSSProperties } from 'react'
 import { getOpenStringNotes, NoteNameToStringMapping } from '../../MusicModel/model'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../app/store'
 
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
@@ -12,7 +14,8 @@ const stringSpacingStyle: CSSProperties = {
 }
 
 const StringNames = ({ numStrings }: { numStrings: number }) => {
-  const names = getOpenStringNotes(numStrings).map(n => NoteNameToStringMapping[n.name]).reverse();
+  const instrument = useSelector((state: RootState) => state.fretboardSettings.instrument);
+  const names = getOpenStringNotes(instrument, numStrings).map(n => NoteNameToStringMapping[n.name]).reverse();
 
   return (
     <div style={{
