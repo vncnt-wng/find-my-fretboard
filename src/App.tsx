@@ -1,11 +1,10 @@
-import { CSSProperties, useEffect } from 'react'
-import { Provider, useDispatch, useSelector, useStore } from 'react-redux';
-import { RootState, store } from './app/store';
+import { CSSProperties } from 'react'
+import { Provider } from 'react-redux';
+import { store } from './app/store';
 import SettingsBar from './Components/SettingsBar';
 import Fretboard from './Components/Fretboard/FretBoard';
 import SelectedNotes from './Components/SelectedNotes';
-import { playNotes } from './Audio/play';
-import { clear } from './Components/Slices/notesSlice';
+import Listeners from './Components/Listeners';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
@@ -32,30 +31,6 @@ const App = () => {
       </div>
     </Provider>
   )
-}
-
-const Listeners = () => {
-  const store = useStore<RootState>();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      console.log(e);
-      if (e.code === "Space") {
-        const selectedNotes = store.getState().noteStateReducer.selectedNotes;
-        console.log(selectedNotes);
-        playNotes(selectedNotes.map(n => n.note));
-      }
-      if (e.code === "Backspace") {
-        dispatch(clear())
-      }
-    };
-    window.addEventListener("keydown", handleKey);
-
-    return () => window.removeEventListener("keydown", handleKey);
-  }, []);
-
-  return (<></>);
 }
 
 export default App

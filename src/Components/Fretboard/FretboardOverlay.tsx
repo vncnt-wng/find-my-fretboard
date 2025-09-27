@@ -20,8 +20,6 @@ const FretboardOverlay = ({ numStrings }: { numStrings: number }): ReactElement 
     if (widthRef.current?.offsetWidth) {
       const divWidth = widthRef.current?.offsetWidth;
       let currentNoteStringLength = divWidth * 4 / 3;
-      console.log(divWidth);
-      console.log(currentNoteStringLength)
       const widths: number[] = [];
       const noteStringLengths: number[] = [currentNoteStringLength];
       for (var i = 1; i <= 24; i++) {
@@ -123,7 +121,6 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
   const dispatch = useDispatch();
 
   const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(note)
     if (hold) {
       dispatch(setHeldNote(fretboardNote));
     } else {
