@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NoteName, NoteNameToStringMapping, Note, StringPosition, noteEq, FretboardNote, stringPositionEq } from '../../MusicModel/model';
+import { noteEq, FretboardNote, stringPositionEq } from '../../MusicModel/model';
 import { playNotes } from '../../Audio/play';
 
 interface NoteState {
@@ -8,6 +8,10 @@ interface NoteState {
 
 const initialState: NoteState = {
   selectedNotes: []
+}
+
+const clearReducer = (state: NoteState) => {
+  state.selectedNotes = [];
 }
 
 const setSingleNoteReducer = (state: NoteState, note: PayloadAction<FretboardNote>) => {
@@ -39,9 +43,10 @@ export const notesSlice = createSlice({
   initialState,
   reducers: {
     setSingleNote: setSingleNoteReducer,
-    setHeldNote: setHeldNoteReducer
+    setHeldNote: setHeldNoteReducer,
+    clear: clearReducer
   }
 });
 
-export const { setSingleNote, setHeldNote } = notesSlice.actions;
+export const { setSingleNote, setHeldNote, clear } = notesSlice.actions;
 export default notesSlice.reducer;
