@@ -3,4 +3,4 @@
 a practice tool to help learn the bass/guitar fretboard.
 written in React with Redux
 
-<img width="1368" height="619" alt="Screenshot 2025-09-26 at 00 56 30" src="https://github.com/user-attachments/assets/fe00279e-43a2-463b-8935-805bd2fe6e3a" />
+<img width="1440" height="808" alt="Screenshot 2025-09-27 at 05 34 18" src="https://github.com/user-attachments/assets/303bd3a9-a336-4134-b1e0-eb7a434618d3" />
