@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { setFretSpacing, setStringNum, setHold, setInstrument } from './Slices/fretboardSettingsSlice';
-import { Instrument, InstrumentToStringNumRange } from '../MusicModel/model';
+import { Instrument, InstrumentToStringNumRange } from '../MusicModel/instrument';
 import { clear } from './Slices/notesSlice';
 
 const settingStyle = {

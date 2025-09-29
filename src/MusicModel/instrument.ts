@@ -1,84 +1,14 @@
-export enum NoteName {
-  C = 0,
-  C_SHARP = 1,
-  D = 2,
-  D_SHARP = 3,
-  E = 4,
-  F = 5,
-  F_SHARP = 6,
-  G = 7,
-  G_SHARP = 8,
-  A = 9,
-  A_SHARP = 10,
-  B = 11
-}
-
-export const NoteNameToStringMapping = {
-  [NoteName.C]: 'C',
-  [NoteName.C_SHARP]: 'C#',
-  [NoteName.D]: 'D',
-  [NoteName.D_SHARP]: 'D#',
-  [NoteName.E]: 'E',
-  [NoteName.F]: 'F',
-  [NoteName.F_SHARP]: 'F#',
-  [NoteName.G]: 'G',
-  [NoteName.G_SHARP]: 'G#',
-  [NoteName.A]: 'A',
-  [NoteName.A_SHARP]: 'A#',
-  [NoteName.B]: 'B',
-}
-
-export interface Note {
-  name: NoteName;
-  octave: number;
-}
+import { nextNote, Note, noteEq, noteHash, NoteName } from "./note";
 
 export interface StringPosition {
   openString: Note;
+  openStringIndex: number;
   index: number;
 }
 
 export interface FretboardNote {
   note: Note;
-  stringPos: StringPosition
-}
-
-export const nextNote = (note: Note): Note => {
-  const nextName = (note.name + 1) % 12;
-  const nextOctave = nextName === NoteName.C ? note.octave + 1 : note.octave;
-  return { name: nextName, octave: nextOctave };
-};
-
-export const noteHash = (note: Note): string => {
-  return `${note.name}-${note.octave}`
-}
-
-export const noteString = (note: Note): string => {
-  return NoteNameToStringMapping[note.name] + note.octave.toString();
-}
-
-export const noteEq = (note1: Note, note2: Note): boolean => {
-  return note1.name === note2.name && note1.octave === note2.octave;
-}
-
-// export const noteAdd = (note: Note, semis: number): Note => {
-//   const newName = (note.name + semis) % 12;
-//   const next
-//   const newOctave = 
-// }
-
-export const noteCmp = (note1: Note, note2: Note): number => {
-  if (note1.octave > note2.octave) {
-    return 1;
-  } else if (note1.octave < note2.octave) {
-    return -1;
-  } else {
-    return note1.name >= note2.name ? 1 : -1;
-  }
-}
-
-export const notesContain = (note: Note, list: Note[]): boolean => {
-  return list.findIndex(n => noteEq(note, n)) != -1;
+  stringPos: StringPosition | null
 }
 
 export const stringPositionEq = (sp1: StringPosition, sp2: StringPosition): boolean => {
@@ -95,6 +25,7 @@ export const getOpenStringNotes = (instrument: Instrument, numStrings: number): 
   } else if (instrument === Instrument.GUITAR) {
     return getGuitarOpenStrings(numStrings);
   }
+  return [];
 }
 
 const getBassOpenStrings = (numStrings: number): Note[] => {
@@ -141,22 +72,22 @@ export interface FretboardMapping {
   stringPosByNote: Map<string, StringPosition[]>
 }
 
-export const initialiseFretboardMapping = (instrument: Instrument, numStrings: number, numFrets: number): FretboardMapping => {
+export const initialiseFretboardMapping = (instrument: Instrument, numStrings: number, numFrets: number = 24): FretboardMapping => {
   const openStrings = getOpenStringNotes(instrument, numStrings);
   const stringIndicies = new Map<string, StringPosition[]>();
 
   const indexNotesByString: Note[][] = openStrings
-    .map((openString) => {
+    .map((openString, i) => {
       const stringNotes: Note[] = []
       var current = openString;
-      for (var i = 0; i <= numFrets; i++) {
+      for (var fretI = 0; fretI <= numFrets; fretI++) {
         stringNotes.push(current);
         var key = noteHash(current);
         if (stringIndicies.has(key)) {
-          stringIndicies.get(key)!.push({ openString, index: i })
+          stringIndicies.get(key)!.push({ openString, openStringIndex: i, index: fretI })
         } 
         else {
-          stringIndicies.set(key, [{ openString, index: i }])
+          stringIndicies.set(key, [{ openString, openStringIndex: i, index: fretI }])
         }
         current = nextNote(current);
       }

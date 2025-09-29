@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FretboardMapping, initialiseFretboardMapping, Instrument, InstrumentToStringNumRange } from '../../MusicModel/model';
+import { FretboardMapping, initialiseFretboardMapping, Instrument, InstrumentToStringNumRange } from '../../MusicModel/instrument';
 
 
 interface FretboardSettings {

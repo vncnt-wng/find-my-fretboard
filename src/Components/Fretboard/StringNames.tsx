@@ -1,5 +1,6 @@
 import { CSSProperties, useState } from 'react'
-import { FretboardNote, getOpenStringNotes, Note, NoteNameToStringMapping, stringPositionsContain } from '../../MusicModel/model'
+import { Note, NoteNameToStringMapping } from '../../MusicModel/note'
+import { FretboardNote, stringPositionsContain } from '../../MusicModel/instrument'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { setHeldNote, setSingleNote } from '../Slices/notesSlice'
@@ -35,10 +36,11 @@ const StringNames = () => {
 
 const StringName = ({ note }: {note: Note}) => {
   const [hover, setHover] = useState(false);
+  // TODO this derived state is duplicated in StringSegment
   const hold = useSelector((state: RootState) => state.fretboardSettings.hold);
-  const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos)
+  const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos!)
   const name = NoteNameToStringMapping[note.name];
-  const stringPos = {openString: note, index: 0} 
+  const stringPos = {openString: note, index: 0, openStringIndex: 0 } 
   const isHeld = stringPositionsContain(stringPos, heldPositions)
   const dispatch = useDispatch(); 
 

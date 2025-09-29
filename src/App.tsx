@@ -28,8 +28,15 @@ const App = () => {
         <Listeners/>
         <SelectedNotes />
         <Fretboard />
+        {/* <PatternPlayer /> */}
       </div>
     </Provider>
+  )
+}
+
+const PatternPlayer = () => {
+  return (
+    <div style={{width: '90%', height: '100px', backgroundColor: 'orange'}} ></div>
   )
 }
 

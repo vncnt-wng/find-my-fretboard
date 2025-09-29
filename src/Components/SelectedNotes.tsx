@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { noteCmp, NoteNameToStringMapping } from '../MusicModel/model';
+import { noteCmp, NoteNameToStringMapping } from '../MusicModel/note';
 
 const SelectedNotes = () => {
   const selectedNotes = useSelector((state: RootState) => state.noteStateReducer.selectedNotes);

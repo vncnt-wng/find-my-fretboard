@@ -2,8 +2,10 @@ import { ReactElement, useState, useRef, useEffect, CSSProperties } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { setSingleNote, setHeldNote } from '../Slices/notesSlice';
-import { FretboardNote, Note,  StringPosition, stringPositionsContain } from '../../MusicModel/model';
+import { Note } from '../../MusicModel/note';
+import { FretboardNote, StringPosition, stringPositionsContain } from '../../MusicModel/instrument';
   
+
 const fretboardOverlayStyle: CSSProperties = {
   position: 'absolute',
   width: '100%',
@@ -115,11 +117,12 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
 
   const { fretboardMapping, hold } = useSelector((state: RootState) => state.fretboardSettings);
   const openString = fretboardMapping.openStrings[stringIndex];
-  const stringPos: StringPosition = { openString: openString, index: fret}
-  const fretboardNote: FretboardNote = { note: note, stringPos: stringPos };
-  const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos)
+  const stringPos: StringPosition = { openString: openString, index: fret, openStringIndex: stringIndex}
+  const fretboardNote: FretboardNote = { note: note, stringPos: stringPos, };
+  // TODO this derived state is duplicated in StringSegment
+  const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos!)
   const isHeld = stringPositionsContain(stringPos, heldPositions)
-  const openStringPlaying = stringPositionsContain({openString: openString, index: 0}, heldPositions);
+  const openStringPlaying = stringPositionsContain(stringPos, heldPositions);
   const dispatch = useDispatch();
 
   const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
