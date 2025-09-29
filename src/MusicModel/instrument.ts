@@ -82,12 +82,13 @@ export const initialiseFretboardMapping = (instrument: Instrument, numStrings: n
       var current = openString;
       for (var fretI = 0; fretI <= numFrets; fretI++) {
         stringNotes.push(current);
-        var key = noteHash(current);
+        const key = noteHash(current);
+        const stringPos = { openString, openStringIndex: i, index: fretI };
         if (stringIndicies.has(key)) {
-          stringIndicies.get(key)!.push({ openString, openStringIndex: i, index: fretI })
+          stringIndicies.get(key)!.push(stringPos)
         } 
         else {
-          stringIndicies.set(key, [{ openString, openStringIndex: i, index: fretI }])
+          stringIndicies.set(key, [stringPos])
         }
         current = nextNote(current);
       }
@@ -103,12 +104,16 @@ export const initialiseFretboardMapping = (instrument: Instrument, numStrings: n
     }
   }
 
-  return {
+  const result = {
     openStrings: openStrings,
     indexNotesByString: indexNotesByString,
     stringNotesByIndex: stringNotesByIndex,
     stringPosByNote: stringIndicies
   };
+
+  console.log(result);
+
+  return result;
 }
 
 
