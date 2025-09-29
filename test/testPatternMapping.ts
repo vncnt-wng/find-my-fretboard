@@ -17,8 +17,8 @@ const cMajor: NotePattern = [
 const defaultPrefs: UserPatternPreferences = {
   stretch: 3,
   skipWeight: 0.9,
-  shiftWeight: 0.5,
-  openStringWeight: 1,
+  shiftWeight: 0.7,
+  openStringWeight: 1.3,
 }
 
 const fretboardMapping = initialiseFretboardMapping(Instrument.BASS, 4);

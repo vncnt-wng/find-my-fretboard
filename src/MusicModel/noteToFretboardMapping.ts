@@ -102,6 +102,10 @@ const getVerticalWeight = (
   // console.log('skip', saip);
   weight = Math.pow(prefs.skipWeight, skip);
 
+  if (position.index == 0) {
+    weight *= prefs.openStringWeight;
+  }
+
   // TODO:
   // - prefer higher strings for higher notes 
 
@@ -130,13 +134,18 @@ const calculateShift = (
   targetIndex: number, 
   stretch: number
 ): number => {
+  // open string - no shift, handled in string skip instead 
+  if (targetIndex == 0) {
+    return 0;
+  }
+
   // down case - always a shift
   if (targetIndex < startIndex) {
     return targetIndex - startIndex; 
   } 
 
   // up case
-  // no shigt if it's within the stretch
+  // no shift if it's within the stretch
   if (startIndex + stretch >= targetIndex) {
     return 0;
   }
