@@ -5,6 +5,10 @@ import SettingsBar from './Components/SettingsBar';
 import Fretboard from './Components/Fretboard/FretBoard';
 import SelectedNotes from './Components/SelectedNotes';
 import Listeners from './Components/Listeners';
+import { NotePattern, UserPatternPreferences } from './MusicModel/pattern';
+import { NoteName } from './MusicModel/note';
+import { makePlayoutPattern } from './MusicModel/makePlayoutPattern';
+import { playPlayoutPattern } from './Audio/play';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
@@ -17,6 +21,7 @@ const pageContainerStyle: CSSProperties = {
   flexDirection: 'column',
   fontSize: '10px',
   color: 'white',
+  gap: '30px',
   fontFamily: '"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif'
 }
 
@@ -28,15 +33,47 @@ const App = () => {
         <Listeners/>
         <SelectedNotes />
         <Fretboard />
-        {/* <PatternPlayer /> */}
+        <PatternPlayer />
       </div>
     </Provider>
   )
 }
 
 const PatternPlayer = () => {
+
+  const GMajor: NotePattern = [
+    { name: NoteName.G, octave: 1 },
+    { name: NoteName.A, octave: 1 },
+    { name: NoteName.B, octave: 1 },
+    { name: NoteName.C, octave: 2 },
+    { name: NoteName.D, octave: 2 },
+    { name: NoteName.E, octave: 2 },
+    { name: NoteName.F_SHARP, octave: 2 },
+    { name: NoteName.G, octave: 2 },
+  ] 
+  
+  const defaultPrefs: UserPatternPreferences = {
+    stretch: 3,
+    skipWeight: 0.9,
+    shiftWeight: 0.7,
+    openStringWeight: 1,
+  }
+  
+  const playPattern = () => {
+    var pattern = makePlayoutPattern(
+      GMajor, 
+      {
+        fretboardMapping: store.getState().fretboardSettings.fretboardMapping, 
+        settings: defaultPrefs 
+      }
+    )
+
+    playPlayoutPattern(pattern);
+  }
+
   return (
-    <div style={{width: '90%', height: '100px', backgroundColor: 'orange'}} ></div>
+    <button onClick={playPattern}>play G major</button>
+    // <div style={{paddingTop: '20px', width: '90%', height: '50px', backgroundColor: 'orange', borderRadius: '10px'}} ></div>
   )
 }
 
