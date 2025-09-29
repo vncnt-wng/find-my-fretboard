@@ -31,7 +31,6 @@ const fretboardSettingsSlice = createSlice({
     setInstrument: changeInstrument,
     setFretSpacing: (state, action: PayloadAction<boolean>) => { state.constFretSpacing = action.payload },
     setStringNum: (state, action: PayloadAction<number>) => { 
-      console.log(action);
       state.stringNum = action.payload;
       state.fretboardMapping = initialiseFretboardMapping(state.instrument, action.payload, 24);
     },

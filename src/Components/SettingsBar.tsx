@@ -39,7 +39,12 @@ const SettingsBar = () => {
             <input
               style={checkboxStyle}
               checked={hold} 
-              onChange={e => dispatch(setHold(e.target.checked))} 
+              onChange={e => {
+                dispatch(setHold(e.target.checked))
+                if (!e.target.checked) {
+                  dispatch(clear())
+                }
+              }} 
               type="checkbox" 
             />
           </div>

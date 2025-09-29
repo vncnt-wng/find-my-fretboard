@@ -121,7 +121,6 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
   const fretboardNote: FretboardNote = { note: note, stringPos: stringPos };
   // TODO this derived state is duplicated in StringSegment
   const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos!)
-  console.log('held', heldPositions, 'stringpos', stringPos);
 
   const isHeld = stringPositionsContain(stringPos, heldPositions)
   const openStringPlaying = stringPositionsContain({ openString: openString, index: 0, openStringIndex: stringIndex}, heldPositions);
