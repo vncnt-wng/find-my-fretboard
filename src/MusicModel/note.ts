@@ -62,6 +62,18 @@ export const noteCmp = (note1: Note, note2: Note): number => {
   }
 }
 
+export const noteValue = (note: Note): number => {
+  return note.name + (note.octave * 12);
+}
+
+export const noteFromValue = (value: number): Note => {
+  return { name: value % 12, octave: Math.floor(value / 12) };
+}
+
+export const noteTranspose = (note: Note, diff: number): Note => {
+  return noteFromValue(noteValue(note) + diff);
+}
+
 export const notesContain = (note: Note, list: Note[]): boolean => {
   return list.findIndex(n => noteEq(note, n)) != -1;
 }

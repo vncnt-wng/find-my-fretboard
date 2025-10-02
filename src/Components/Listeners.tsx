@@ -1,10 +1,8 @@
-import * as Tone from "tone";
 import { useEffect } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { RootState } from "../app/store";
-import { playNotes, playPlayoutPattern } from "../Audio/play";
+import { playNotes } from "../Audio/play";
 import { clear } from "./Slices/notesSlice";
-import { makePlayoutPattern } from "../MusicModel/makePlayoutPattern";
 
 const Listeners = () => {
   const store = useStore<RootState>();

@@ -10,6 +10,7 @@ export const getPatternMapping = (pattern: NotePattern, ctx: PatternMappingConte
   // TODO - this is greedy
   // - proposal - run with A* with highest cumulative score as the distance
   //  - could try making new nodes on both string position and hand start
+  //  - initial fringe nodes could be all hand starts avaiable from the stretch setting 
   for (const note of pattern) {
     const candidatePositions = stringPositionsForNote(note, ctx.fretboardMapping);
     if (!candidatePositions) {

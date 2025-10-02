@@ -111,8 +111,6 @@ export const initialiseFretboardMapping = (instrument: Instrument, numStrings: n
     stringPosByNote: stringIndicies
   };
 
-  (result);
-
   return result;
 }
 
