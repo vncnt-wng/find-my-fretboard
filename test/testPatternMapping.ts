@@ -4,14 +4,14 @@ import { NotePattern, UserPatternPreferences } from "../src/MusicModel/pattern";
 import { getPatternMapping } from "../src/MusicModel/noteToFretboardMapping";
 
 const cMajor: NotePattern = [
-  { name: NoteName.G, octave: 1 },
-  { name: NoteName.A, octave: 1 },
-  { name: NoteName.B, octave: 1 },
-  { name: NoteName.C, octave: 2 },
-  { name: NoteName.D, octave: 2 },
-  { name: NoteName.E, octave: 2 },
-  { name: NoteName.F_SHARP, octave: 2 },
-  { name: NoteName.G, octave: 2 },
+  [{ name: NoteName.G, octave: 1 }],
+  [{ name: NoteName.A, octave: 1 }],
+  [{ name: NoteName.B, octave: 1 }],
+  [{ name: NoteName.C, octave: 2 }],
+  [{ name: NoteName.D, octave: 2 }],
+  [{ name: NoteName.E, octave: 2 }],
+  [{ name: NoteName.F_SHARP, octave: 2 }],
+  [{ name: NoteName.G, octave: 2 }],
 ] 
 
 const defaultPrefs: UserPatternPreferences = {

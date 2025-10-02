@@ -8,8 +8,6 @@ const Listeners = () => {
   const store = useStore<RootState>();
   const dispatch = useDispatch();
 
-
-
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       console.log(e);

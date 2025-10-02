@@ -2,7 +2,7 @@ import * as Tone from 'tone';
 import { Note, noteString } from "../MusicModel/note";
 import { synth } from "./synth";
 import { store } from '../app/store';
-import { setSingleNote } from '../Components/Slices/notesSlice';
+import { setHeldNotes } from '../Components/Slices/notesSlice';
 import { FretboardNote } from '../MusicModel/instrument';
 
 export const playNotes = (notes: Note[]): void => {
@@ -22,7 +22,7 @@ export interface PlayoutNoteData {
   fretboardNote: FretboardNote
 }
 
-export type PlayoutPattern = PlayoutNoteData[]
+export type PlayoutPattern = PlayoutNoteData[][]
 
 export const playPlayoutPattern = (pattern: PlayoutPattern): void  => {
   console.log(pattern);
@@ -32,23 +32,26 @@ export const playPlayoutPattern = (pattern: PlayoutPattern): void  => {
   transport.cancel();
   transport.seconds = 0
 
-  pattern.forEach(({midiNote, fretboardNote}) => {
+  pattern.forEach(noteList => {
+    const midiData = noteList[0].midiNote;
+    const notesNames = noteList.map(n => n.midiNote.name);
+    const fretboardNotes = noteList.map(n => n.fretboardNote);
+
     // schedule audio
     synth.triggerAttackRelease(
-      midiNote.name,
-      midiNote.duration,
-      midiNote.time,
-      midiNote.velocity
+      notesNames,
+      midiData.duration,
+      midiData.time,
+      midiData.velocity
     );
-
     
     // schedule overlay at time
     transport.schedule(time => {
       draw.schedule(() => {
-        console.log('scheduled', fretboardNote);
-        store.dispatch(setSingleNote(fretboardNote));
+        console.log('scheduled', fretboardNotes);
+        store.dispatch(setHeldNotes(fretboardNotes));
       }, time);
-    }, midiNote.time);
+    }, midiData.time);
   });
   transport.start();
 }

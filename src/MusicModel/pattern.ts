@@ -1,9 +1,9 @@
 import { Note, noteTranspose } from "./note";
 import { FretboardMapping, FretboardNote } from "./instrument";
 
-export type NotePattern = Note[]
+export type NotePattern = Note[][]
 
-export type PatternMapping = FretboardNote[];
+export type PatternMapping = FretboardNote[][];
 
 export interface UserPatternPreferences {
   stretch: number,
@@ -18,6 +18,6 @@ export interface PatternMappingContext {
 }
 
 export const notePatternTranspose = (pattern: NotePattern, diff: number): NotePattern => {
-  return pattern.map(n => noteTranspose(n, diff));
+  return pattern.map(ln => ln.map(n => noteTranspose(n, diff)));
 }
 

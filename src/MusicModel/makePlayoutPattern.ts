@@ -5,9 +5,12 @@ import { Note, noteString } from './note'
 
 export const makePlayoutPattern = (pattern: NotePattern, ctx: PatternMappingContext): PlayoutPattern => {
   const patternMapping = getPatternMapping(pattern, ctx)
-  return patternMapping.map((fn, i) => {
-    return { fretboardNote: fn, midiNote: getBasicMidiNoteData(fn.note, i) };
-  });
+  return patternMapping.map(
+    (notes, i) => notes.map(
+      fn => { 
+        return { fretboardNote: fn, midiNote: getBasicMidiNoteData(fn.note, i) }
+      }
+  ));
 }
 
 const getBasicMidiNoteData = (note: Note, index: number) => {

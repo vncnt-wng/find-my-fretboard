@@ -43,15 +43,22 @@ const setHeldNoteReducer = (state: NoteState, note: PayloadAction<FretboardNote>
   }
 }
 
+const setHeldNotesReducer = (state: NoteState, notes: PayloadAction<FretboardNote[]>) => {
+  // TODO - eventually want to be able to do individually moving voices instead of changing all held notes
+  state.selectedNotes = notes.payload;
+  playNotes(state.selectedNotes.map(n => n.note));
+}
+
 export const notesSlice = createSlice({
   name: 'notesStateSlice',
   initialState,
   reducers: {
     setSingleNote: setSingleNoteReducer,
     setHeldNote: setHeldNoteReducer,
+    setHeldNotes: setHeldNotesReducer,
     clear: clearReducer
   }
 });
 
-export const { setSingleNote, setHeldNote, clear } = notesSlice.actions;
+export const { setSingleNote, setHeldNote, setHeldNotes, clear } = notesSlice.actions;
 export default notesSlice.reducer;

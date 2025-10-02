@@ -4,38 +4,71 @@ import { NotePattern, PatternMapping, PatternMappingContext, UserPatternPreferen
 
 
 export const getPatternMapping = (pattern: NotePattern, ctx: PatternMappingContext): PatternMapping => {
-  const result: FretboardNote[] = [];
+  const result: FretboardNote[][] = [];
+  // TODO - consider should this be list of positions when we're doing chords?
+  // - then can calculate difference for moving each voice? 
+  // - or if moving from chord to single note can go from closest position or other
   var handStartPos: StringPosition | null = null;
 
   // TODO - this is greedy
   // - proposal - run with A* with highest cumulative score as the distance
   //  - could try making new nodes on both string position and hand start
   //  - initial fringe nodes could be all hand starts avaiable from the stretch setting 
-  for (const note of pattern) {
-    const candidatePositions = stringPositionsForNote(note, ctx.fretboardMapping);
-    if (!candidatePositions) {
-      result.push({ note: note, stringPos: null }) // empty mapping if no candidates
-      continue;
-    }
-    const bestPosition = getBestPostion(note, candidatePositions!, handStartPos, ctx.settings)
-    const fretboardNote = { note: note, stringPos: bestPosition };
-    result.push(fretboardNote);
-
-    // console.log(handStartPos);
-    // console.log(fretboardNote)
-    // console.log()
-
-    handStartPos = updateHandStart(handStartPos, bestPosition, ctx.settings);
+  for (const noteList of pattern) {
+    const bestListMapping = noteList.length === 1
+      ? mapSingleNote(noteList[0], handStartPos, ctx)
+      : mapPoly(noteList, handStartPos, ctx)
+      
+    result.push(bestListMapping);
+    handStartPos = updateHandStart(handStartPos, bestListMapping.map(m => m.stringPos), ctx.settings);
   }
 
   return result;
 }
 
+const mapSingleNote = (
+  note: Note, 
+  prevHandStart: StringPosition | null, 
+  ctx: PatternMappingContext
+): FretboardNote[] => {
+  const candidatePositions = stringPositionsForNote(note, ctx.fretboardMapping);
+  if (!candidatePositions) {
+    return [{ note: note, stringPos: null }] // empty mapping if no candidates
+  }
+  const bestPosition = getBestPostion(note, candidatePositions!, prevHandStart, ctx.settings)
+  const fretboardNote = { note: note, stringPos: bestPosition };
+
+  return [fretboardNote]
+}
+
+const mapPoly = (
+  notes: Note[], 
+  prevHandStart: StringPosition | null, 
+  ctx: PatternMappingContext
+): FretboardNote[] => {
+  // TODO implement
+  // - find out if voicing can be played
+  // - get candidate positions for each voice 
+  // - figure out how to rank voicings compared to each other
+  return []
+}
+
 const updateHandStart = (
   previousHandStart: StringPosition | null, 
-  nextPosition: StringPosition,
+  nextPositions: (StringPosition | null)[],
   settings: UserPatternPreferences
-): StringPosition => {
+): StringPosition | null => {
+
+  const mappedPositions = nextPositions
+    .filter(p => p !== null)
+    .sort((p1, p2) => p1.index < p2.index ? -1 : 1);
+
+  if (mappedPositions.length === 0) {
+    return null;
+  }
+
+  const nextPosition = mappedPositions[0]
+
   if (previousHandStart == null) {
     return nextPosition;
   }
