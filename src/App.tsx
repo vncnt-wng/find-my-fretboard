@@ -50,6 +50,14 @@ const PatternPlayer = () => {
     [{ name: NoteName.E, octave: 2 }],
     [{ name: NoteName.F_SHARP, octave: 2 }],
     [{ name: NoteName.G, octave: 2 }],
+    [{ name: NoteName.G, octave: 2 }],
+    [{ name: NoteName.A, octave: 2 }],
+    [{ name: NoteName.B, octave: 2 }],
+    [{ name: NoteName.C, octave: 3 }],
+    [{ name: NoteName.D, octave: 3 }],
+    [{ name: NoteName.E, octave: 3 }],
+    [{ name: NoteName.F_SHARP, octave: 3 }],
+    [{ name: NoteName.G, octave: 3 }]
   ] 
   
   const defaultPrefs: UserPatternPreferences = {

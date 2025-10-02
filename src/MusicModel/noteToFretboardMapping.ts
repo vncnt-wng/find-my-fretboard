@@ -33,7 +33,7 @@ const mapSingleNote = (
 ): FretboardNote[] => {
   const candidatePositions = stringPositionsForNote(note, ctx.fretboardMapping);
   if (!candidatePositions) {
-    return [{ note: note, stringPos: null }] // empty mapping if no candidates
+    return [];
   }
   const bestPosition = getBestPostion(note, candidatePositions!, prevHandStart, ctx.settings)
   const fretboardNote = { note: note, stringPos: bestPosition };
@@ -46,11 +46,44 @@ const mapPoly = (
   prevHandStart: StringPosition | null, 
   ctx: PatternMappingContext
 ): FretboardNote[] => {
-  // TODO implement
-  // - find out if voicing can be played
-  // - get candidate positions for each voice 
+  // TODO - how to handle unmapped notes here and in single?
+  const candidatePositionsByNote = notes
+    .map(n => stringPositionsForNote(n, ctx.fretboardMapping))
+    .filter(ps => ps !== undefined)
+
+  if (candidatePositionsByNote.length !== notes.length) {
+    return [];
+  }
+
+  const validVoicings = getValidFingerings(candidatePositionsByNote);
+  // get valid voicing combinations
   // - figure out how to rank voicings compared to each other
-  return []
+  const bestVoicing = validVoicings[0];
+  const fretBoardNotes = []
+  for (var i = 0; i < notes.length; i++) {
+    fretBoardNotes.push({note: notes[i], stringPos: bestVoicing[i]})
+  }
+  return fretBoardNotes;
+}
+
+const getValidFingerings = (candidatePositionsByNote: StringPosition[][]): StringPosition[][] => {
+  // idea - enumerate all candidatePositions * note voicings, only resulting if valid
+  return findValidRecursive(candidatePositionsByNote, 0, [], []);
+}
+
+const findValidRecursive = (
+  cPosByNote: StringPosition[][], 
+  index: number, 
+  curr: StringPosition[],
+  usedIndicies: number[]
+): StringPosition[][] => {
+  if (index == cPosByNote.length) {
+    return [curr]
+  }
+  return cPosByNote[index]
+      .filter(p => !usedIndicies.includes(p.openStringIndex))
+      .map(p => findValidRecursive(cPosByNote, index + 1, [...curr, p], [...usedIndicies, p.openStringIndex]))
+      .flat(1)
 }
 
 const updateHandStart = (
