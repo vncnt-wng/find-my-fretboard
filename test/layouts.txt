@@ -1,0 +1,44 @@
+Some type of key selector, just list for now - shared for all layouts?
+
+## Scale section
+
+scale options: 
+- show whole scale
+  - dot markers in the middle of frets
+- show chord tones - how to apply properly to diminished/whole tone?
+  - coloured dot markers on top of scale markers - so can easily switch to either or both
+scale type selection
+
+scale actions 
+- visualise/play
+  - octaves starting from given note?
+  - asc/desc
+  - starting from given note 
+  - thirds, sixths, 5ths, 7ths arpegiated/diads?
+  - chords with n voices starting on each note
+    - + inversions
+      - + some way of specifying spread voicing option
+    - + arpegiated/chord
+
+
+## pattern/transcription 
+### replaces whole scale panel when selected, selection panel width same, scale options just switches out for whatever pattern options/selection
+
+cowboy chords/basic progressions
+ - simple progression generator? 
+hanon excercises 
+barry exercises
+- different voicings/inversions of maj6/dim7 chords on the 6th dim - handled by 
+- barry's patterns for different starting notes on 6th dim 
+- barry's chord tone/chromatic pattern for half/whole steps 
+- barry m3 excercise
+jaco warmups
+
+
+## playback control
+
+- play/pause
+- srub
+- speed
+
+we're probably gonna want voicing -> chord mapping

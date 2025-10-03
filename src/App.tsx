@@ -40,7 +40,7 @@ const App = () => {
 }
 
 const PatternPlayer = () => {
-
+  // TODO challenge - render circle of 5th as circle, with arrows in between 
   const GMajor: NotePattern = [
     [{ name: NoteName.G, octave: 1 }],
     [{ name: NoteName.A, octave: 1 }],
@@ -49,7 +49,6 @@ const PatternPlayer = () => {
     [{ name: NoteName.D, octave: 2 }],
     [{ name: NoteName.E, octave: 2 }],
     [{ name: NoteName.F_SHARP, octave: 2 }],
-    [{ name: NoteName.G, octave: 2 }],
     [{ name: NoteName.G, octave: 2 }],
     [{ name: NoteName.A, octave: 2 }],
     [{ name: NoteName.B, octave: 2 }],
