@@ -1,64 +1,23 @@
 import { useDispatch, useSelector } from "react-redux"
-import { RootState, store } from "../../app/store"
-import { playPlayoutPattern } from "../../Audio/play"
-import { makePlayoutPattern } from "../../MusicModel/makePlayoutPattern"
+import { RootState } from "../../app/store"
 import { NoteName } from "../../MusicModel/note"
-import { NotePattern, UserPatternPreferences } from "../../MusicModel/pattern"
 import { getScaleNames, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
 import { setPlayerKey, setPlayerPattern } from "../Slices/playerSlice"
 import { clearHighlightedNames, clearScaleNames, setHighlightedNames, setScaleNames } from "../Slices/notesSlice"
+import { useEffect, useRef } from "react"
 
 const PatternPlayer = () => {
-  // TODO challenge - render circle of 5th as circle, with arrows in between 
-  // - idea - fixed position 
-  const GMajor: NotePattern = [
-    [{ name: NoteName.G, octave: 1 }],
-    [{ name: NoteName.A, octave: 1 }],
-    [{ name: NoteName.B, octave: 1 }],
-    [{ name: NoteName.C, octave: 2 }],
-    [{ name: NoteName.D, octave: 2 }],
-    [{ name: NoteName.E, octave: 2 }],
-    [{ name: NoteName.F_SHARP, octave: 2 }],
-    [{ name: NoteName.G, octave: 2 }],
-    [{ name: NoteName.A, octave: 2 }],
-    [{ name: NoteName.B, octave: 2 }],
-    [{ name: NoteName.C, octave: 3 }],
-    [{ name: NoteName.D, octave: 3 }],
-    [{ name: NoteName.E, octave: 3 }],
-    [{ name: NoteName.F_SHARP, octave: 3 }],
-    [{ name: NoteName.G, octave: 3 }]
-  ] 
-  
-  const defaultPrefs: UserPatternPreferences = {
-    stretch: 3,
-    skipWeight: 0.9,
-    shiftWeight: 0.7,
-    openStringWeight: 1.3,
-  }
-  
-  const playPattern = () => {
-    var pattern = makePlayoutPattern(
-      GMajor, 
-      {
-        fretboardMapping: store.getState().fretboardSettings.fretboardMapping, 
-        settings: defaultPrefs 
-      }
-    )
-
-    playPlayoutPattern(pattern);
-  }
-
   return (
-    // <button onClick={playPattern}>play G major</button>
     <div style={{
       width: '90%', 
-      height: '200px', 
-      backgroundColor: 'lightslategrey', 
+      backgroundColor: 'mediumSlateBlue', 
       borderRadius: '10px',
-      display: 'flex',
-      flexDirection: 'row',
+      display: 'grid',
+      gridTemplateColumns: '1fr 2fr 2fr',
       justifyContent: 'spaceBetween',
       alignItems: 'center',
+      padding: '20px',
+      gap: '20px'
     }}>
       <KeySelection />
       <PatternSelection />
@@ -70,15 +29,48 @@ const PatternPlayer = () => {
 const sectionStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
+  backgroundColor: 'mediumSlateBlue',
   gap: '5px',
   width: '100%',
   height: '100%',
-  backgroundColor: 'mediumSlateBlue',
-  // margin: '20px 20px 20px 20p',
+  border: '20px 20px 20px 20px',
+  justifyContent: 'center',
 }
 
+const chordButtonStyle: React.CSSProperties = {
+  width: '35px',
+  height: '35px',
+  borderRadius: '100%',
+  position: 'absolute'
+}
+
+
+
 const KeySelection = () => {
+  const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (divRef.current) {
+      const { width, height } = divRef.current.getBoundingClientRect();
+      const radius = Math.min(width, height) / 2 - 20;
+      console.log(radius)
+      const keyDivs = Array.from(divRef.current.children) as HTMLElement[];
+      for (var i = 0; i < keyDivs.length; i++)
+      {
+        const current = keyDivs[i];
+        const offset = current.getBoundingClientRect().height / 2;
+        const angle = (- Math.PI / 2) + (2 * Math.PI / keyDivs.length * i);
+        const x = - offset + (width / 2) + radius * Math.cos(angle);
+        const y = - offset + (height / 2) + radius * Math.sin(angle);
+        console.log(x, y)
+        current.style.left = `${x.toString()}px`;
+        current.style.top = `${y.toString()}px`;
+        current.style.position = 'absolute'
+      }
+    }
+
+  }, [])
 
   const setKey = (name: NoteName) => {
     dispatch(setPlayerKey(name))
@@ -87,52 +79,50 @@ const KeySelection = () => {
   }
 
   return ( 
-    <div style={sectionStyle}>
-      <div>
-      <button onClick={() => setKey(NoteName.C)}>
+    <div 
+      ref={divRef}
+      style={{
+        ...sectionStyle,
+        alignItems: 'center',
+        position: 'relative'
+      }}
+    >
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.C)}>
         C
       </button>
-      <button onClick={() => setKey(NoteName.G)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.G)}>
         G
       </button>
-      </div>
-      <div>
-      <button onClick={() => setKey(NoteName.D)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.D)}>
         D
       </button>
-      <button onClick={() => setKey(NoteName.A)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.A)}>
         A
       </button>
-      </div>
-      <div>
-      <button onClick={() => setKey(NoteName.E)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.E)}>
         E
       </button>
-      <button onClick={() => setKey(NoteName.F_SHARP)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.B)}>
+        B
+      </button>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.F_SHARP)}>
         F#
       </button>
-      </div>
-      <div>
-      <button onClick={() => setKey(NoteName.C_SHARP)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.C_SHARP)}>
         Db
       </button>
-      <button onClick={() => setKey(NoteName.G_SHARP)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.G_SHARP)}>
         Ab
       </button>
-      </div>
-      <div>
-      <button onClick={() => setKey(NoteName.D_SHARP)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.D_SHARP)}>
         Eb
       </button>
-      <button onClick={() => setKey(NoteName.A_SHARP)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.A_SHARP)}>
         Bb
       </button>
-      </div>
-      <div>
-      <button onClick={() => setKey(NoteName.F)}>
+      <button style={chordButtonStyle} onClick={() => setKey(NoteName.F)}>
         F
       </button>
-      </div>
     </div>
   )
 }

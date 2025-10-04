@@ -22,7 +22,7 @@ const pageContainerStyle: CSSProperties = {
   flexDirection: 'column',
   fontSize: '10px',
   color: 'white',
-  gap: '30px',
+  gap: '60px',
   fontFamily: '"HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif'
 }
 
