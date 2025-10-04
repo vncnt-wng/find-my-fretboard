@@ -8,7 +8,7 @@ const SelectedNotes = () => {
   const sortedSelection = [...selectedNotes].sort((a, b) => noteCmp(a.note, b.note));
 
   return (
-    <div style={{ fontSize: '3rem', textAlign: 'center' }}>
+    <div style={{ height: '3rem', fontSize: '3rem', textAlign: 'center' }}>
       {sortedSelection.map(n => 
         `${NoteNameToStringMapping[n.note.name]}${n.note.octave}`).join(', ')
       }
