@@ -1,17 +1,39 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { noteEq } from '../../MusicModel/note';
+import { Note, noteEq, NoteName } from '../../MusicModel/note';
 import { FretboardNote, stringPositionEq } from '../../MusicModel/instrument';
 import { playNotes } from '../../Audio/play';
 
 interface NoteState {
   selectedNotes: FretboardNote[],
+  scaleNames: NoteName[],
+  highlightedNames: NoteName[],
+  highlightedNotes: Note[] // need to figure out how UX of all these together will work
 }
 
 const initialState: NoteState = {
-  selectedNotes: []
+  selectedNotes: [],
+  scaleNames: [],
+  highlightedNames: [],
+  highlightedNotes: []
 }
 
-const clearReducer = (state: NoteState) => {
+const setScaleNamesReducer = (state: NoteState, action: PayloadAction<NoteName[]>) => {
+  state.scaleNames = action.payload;
+}
+
+const setHighlightedNamesReducer = (state: NoteState, action: PayloadAction<NoteName[]>) => {
+  state.highlightedNames = action.payload;
+}
+
+const clearScaleNamesReducer = (state: NoteState) => {
+  state.scaleNames = [];
+}
+
+const clearHighlightedNamesReducer = (state: NoteState) => {
+  state.highlightedNames = [];
+}
+
+const clearSelectedNotesReducer = (state: NoteState) => {
   state.selectedNotes = [];
 }
 
@@ -53,12 +75,26 @@ export const notesSlice = createSlice({
   name: 'notesStateSlice',
   initialState,
   reducers: {
+    setScaleNames: setScaleNamesReducer,
+    setHighlightedNames: setHighlightedNamesReducer,
     setSingleNote: setSingleNoteReducer,
     setHeldNote: setHeldNoteReducer,
     setHeldNotes: setHeldNotesReducer,
-    clear: clearReducer
+    clearSelectedNotes: clearSelectedNotesReducer,
+    clearScaleNames: clearScaleNamesReducer,
+    clearHighlightedNames: clearHighlightedNamesReducer,
   }
 });
 
-export const { setSingleNote, setHeldNote, setHeldNotes, clear } = notesSlice.actions;
+export const { 
+  setScaleNames,
+  setHighlightedNames,
+  setSingleNote, 
+  setHeldNote, 
+  setHeldNotes, 
+  clearScaleNames,
+  clearHighlightedNames,
+  clearSelectedNotes
+} = notesSlice.actions;
+
 export default notesSlice.reducer;

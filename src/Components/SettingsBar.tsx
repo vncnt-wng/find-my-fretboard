@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { setFretSpacing, setStringNum, setHold, setInstrument } from './Slices/fretboardSettingsSlice';
 import { Instrument, InstrumentToStringNumRange } from '../MusicModel/instrument';
-import { clear } from './Slices/notesSlice';
+import { clearSelectedNotes } from './Slices/notesSlice';
 
 const settingStyle = {
   display: 'flex',
@@ -42,7 +42,7 @@ const SettingsBar = () => {
               onChange={e => {
                 dispatch(setHold(e.target.checked))
                 if (!e.target.checked) {
-                  dispatch(clear())
+                  dispatch(clearSelectedNotes())
                 }
               }} 
               type="checkbox" 
@@ -68,7 +68,7 @@ const StringAndInstrumentSelection = () => {
           value={instrument}
           name="numStrings"
           onChange={e => {
-            dispatch(clear())
+            dispatch(clearSelectedNotes())
             dispatch(setInstrument(Number(e.target.value)))} 
           }
           

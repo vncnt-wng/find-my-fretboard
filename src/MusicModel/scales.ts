@@ -1,4 +1,4 @@
-import { Note, NoteName, noteTranspose } from "./note";
+import { Note, NoteName, noteNameTranspose, noteTranspose } from "./note";
 import { NotePattern } from "./pattern";
 
 export interface Scale {
@@ -6,7 +6,31 @@ export interface Scale {
   noteName: NoteName
 }
 
-export type ScaleType = 'major' | string
+export type PlayerPattern = ScaleType | string;
+
+export type ScaleType = 
+  'major' | 
+  '6th_dim' | 
+  'minor_mel' | 
+  'minor_harm' | 
+  '6th_dim_minor' | 
+  'diminished_hw' | 
+  'diminished_wh' | 
+  'wholeTone' | 
+  string
+
+export const scaleTypeToName: { [key: ScaleType]: string }= {
+  'major': 'major',
+  '6th_dim': '6th diminished', 
+  'minor_mel': 'melodic minor', 
+  'minor_harm': 'harmonic minor', 
+  '6th_dim_minor': 'minor 6th diminished',  
+  'diminished_hw': 'half-whole diminished', 
+  'diminished_wh': 'whole-half diminished', 
+  'wholeTone': 'whole tone'
+}
+
+
 
 const intervalsByScale: { [key: ScaleType]: number[] } = {
   'major': [0, 2, 4, 5, 7, 9, 11],
@@ -19,6 +43,11 @@ const intervalsByScale: { [key: ScaleType]: number[] } = {
   // 'altered': [0, 1, 3, 4, 6, 8, 10], // 7th mode of melodic minor
   'wholeTone': [0, 2, 4, 6, 8, 10],
 
+}
+
+export const getScaleNames = (name: NoteName, scale: ScaleType) => {
+  return intervalsByScale[scale]
+    .map((i => noteNameTranspose(name, i)))
 }
 
 // TODO should scales just be list of notenames instead of notes?
@@ -36,27 +65,27 @@ export const makeScale = (name: NoteName, scale: ScaleType, startOctave: number,
   return notes;
 }
 
-export const makeIntervals = (length: number, interval: number): NotePattern => {
-  const pattern = [];
-  for (var i = 0; i < length; i++) {
-    pattern.push([g[i], g[i + interval]])
-  }
-  return pattern;
-}
+// export const makeIntervals = (length: number, interval: number): NotePattern => {
+//   const pattern = [];
+//   for (var i = 0; i < length; i++) {
+//     pattern.push([g[i], g[i + interval]])
+//   }
+//   return pattern;
+// }
 
-export const makeAscendingIntervals = (length: number, interval: number): NotePattern => {
-  const pattern = [];
-  for (var i = 0; i < length; i++) {
-    pattern.push([g[i]])
-    pattern.push([g[i + interval]])
-  }
-  return pattern;
-}
+// export const makeAscendingIntervals = (length: number, interval: number): NotePattern => {
+//   const pattern = [];
+//   for (var i = 0; i < length; i++) {
+//     pattern.push([g[i]])
+//     pattern.push([g[i + interval]])
+//   }
+//   return pattern;
+// }
 
-export const makeThirds = (length: number): NotePattern => {
-  return makeIntervals(length, 2);
-}
+// export const makeThirds = (length: number): NotePattern => {
+//   return makeIntervals(length, 2);
+// }
 
-export const makeSixths = (length: number): NotePattern => {
-  return makeIntervals(length, 5);
-}
+// export const makeSixths = (length: number): NotePattern => {
+//   return makeIntervals(length, 5);
+// }

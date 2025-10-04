@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { RootState } from "../app/store";
 import { playNotes } from "../Audio/play";
-import { clear } from "./Slices/notesSlice";
+import { clearSelectedNotes } from "./Slices/notesSlice";
 
 const Listeners = () => {
   const store = useStore<RootState>();
@@ -12,11 +12,11 @@ const Listeners = () => {
     const handleKey = (e: KeyboardEvent) => {
       console.log(e);
       if (e.code === "Space") {
-        const selectedNotes = store.getState().noteStateReducer.selectedNotes;
+        const selectedNotes = store.getState().noteState.selectedNotes;
         playNotes(selectedNotes.map(n => n.note));
       }
       if (e.code === "Backspace") {
-        dispatch(clear())
+        dispatch(clearSelectedNotes())
       }
     };
     window.addEventListener("keydown", handleKey);

@@ -120,7 +120,7 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
   const stringPos: StringPosition = { openString: openString, index: fret, openStringIndex: stringIndex}
   const fretboardNote: FretboardNote = { note: note, stringPos: stringPos };
   // TODO this derived state is duplicated in StringSegment
-  const heldPositions = [...useSelector((state: RootState) => state.noteStateReducer.selectedNotes)].map(fretNote => fretNote.stringPos!)
+  const heldPositions = [...useSelector((state: RootState) => state.noteState.selectedNotes)].map(fretNote => fretNote.stringPos!)
 
   const isHeld = stringPositionsContain(stringPos, heldPositions)
   const openStringPlaying = stringPositionsContain({ openString: openString, index: 0, openStringIndex: stringIndex}, heldPositions);
@@ -151,9 +151,35 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
             : 'black'
         // padding:'0.3rem 0' 
       }}/>
+      <PatternMarker note={note} />
     </div>
       
   )
+}
+
+
+const PatternMarker = ({note}: {note: Note}) => {
+  const { scaleNames, highlightedNames } = useSelector((state: RootState) => state.noteState);
+  const highlighted = highlightedNames.includes(note.name);
+  const hasMarker = scaleNames.includes(note.name);
+
+  if (!hasMarker && !highlighted) {
+    return <></>
+  }
+
+  return (
+    <div style={{
+      backgroundColor: highlighted ? 'red' : 'black',
+      borderRadius: '100%',
+      height: '8px',
+      width: '8px',
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      marginInline: 'auto'
+    }}/>
+  )
+
 }
 
 export default FretboardOverlay;

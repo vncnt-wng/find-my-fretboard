@@ -3,7 +3,7 @@ import { RootState } from '../app/store';
 import { noteCmp, NoteNameToStringMapping } from '../MusicModel/note';
 
 const SelectedNotes = () => {
-  const selectedNotes = useSelector((state: RootState) => state.noteStateReducer.selectedNotes);
+  const selectedNotes = useSelector((state: RootState) => state.noteState.selectedNotes);
   // move to reducer? 
   const sortedSelection = [...selectedNotes].sort((a, b) => noteCmp(a.note, b.note));
 

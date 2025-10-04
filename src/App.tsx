@@ -9,6 +9,7 @@ import { NotePattern, UserPatternPreferences } from './MusicModel/pattern';
 import { NoteName } from './MusicModel/note';
 import { makePlayoutPattern } from './MusicModel/makePlayoutPattern';
 import { playPlayoutPattern } from './Audio/play';
+import PatternPlayer from './Components/PatternPlayer/PatternPlayer';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
@@ -39,49 +40,5 @@ const App = () => {
   )
 }
 
-const PatternPlayer = () => {
-  // TODO challenge - render circle of 5th as circle, with arrows in between 
-  const GMajor: NotePattern = [
-    [{ name: NoteName.G, octave: 1 }],
-    [{ name: NoteName.A, octave: 1 }],
-    [{ name: NoteName.B, octave: 1 }],
-    [{ name: NoteName.C, octave: 2 }],
-    [{ name: NoteName.D, octave: 2 }],
-    [{ name: NoteName.E, octave: 2 }],
-    [{ name: NoteName.F_SHARP, octave: 2 }],
-    [{ name: NoteName.G, octave: 2 }],
-    [{ name: NoteName.A, octave: 2 }],
-    [{ name: NoteName.B, octave: 2 }],
-    [{ name: NoteName.C, octave: 3 }],
-    [{ name: NoteName.D, octave: 3 }],
-    [{ name: NoteName.E, octave: 3 }],
-    [{ name: NoteName.F_SHARP, octave: 3 }],
-    [{ name: NoteName.G, octave: 3 }]
-  ] 
-  
-  const defaultPrefs: UserPatternPreferences = {
-    stretch: 3,
-    skipWeight: 0.9,
-    shiftWeight: 0.7,
-    openStringWeight: 1.3,
-  }
-  
-  const playPattern = () => {
-    var pattern = makePlayoutPattern(
-      GMajor, 
-      {
-        fretboardMapping: store.getState().fretboardSettings.fretboardMapping, 
-        settings: defaultPrefs 
-      }
-    )
-
-    playPlayoutPattern(pattern);
-  }
-
-  return (
-    <button onClick={playPattern}>play G major</button>
-    // <div style={{paddingTop: '20px', width: '90%', height: '50px', backgroundColor: 'orange', borderRadius: '10px'}} ></div>
-  )
-}
 
 export default App

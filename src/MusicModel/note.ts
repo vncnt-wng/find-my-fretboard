@@ -74,6 +74,10 @@ export const noteTranspose = (note: Note, diff: number): Note => {
   return noteFromValue(noteValue(note) + diff);
 }
 
+export const noteNameTranspose = (noteName: NoteName, diff: number): NoteName => {
+  return (noteName + diff) % 12
+}
+
 export const notesContain = (note: Note, list: Note[]): boolean => {
   return list.findIndex(n => noteEq(note, n)) != -1;
 }

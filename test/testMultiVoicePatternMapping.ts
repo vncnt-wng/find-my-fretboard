@@ -15,5 +15,5 @@ const defaultPrefs: UserPatternPreferences = {
 
 const fretboardMapping = initialiseFretboardMapping(Instrument.BASS, 4);
 
-const pattern = getPatternMapping(makeThirds(8), {fretboardMapping: fretboardMapping, settings: defaultPrefs})
-console.log(JSON.stringify(pattern, null, 4));
+// const pattern = getPatternMapping(makeThirds(8), {fretboardMapping: fretboardMapping, settings: defaultPrefs})
+// console.log(JSON.stringify(pattern, null, 4));
