@@ -45,7 +45,7 @@ const chordButtonStyle: React.CSSProperties = {
 
 
 const KeySelection = () => {
-  const key = useSelector((state: RootState) => state.playerState.key)
+  const { key, symmetryKeys } = useSelector((state: RootState) => state.playerState)
   const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
 
@@ -73,6 +73,16 @@ const KeySelection = () => {
     dispatch(setPlayerKey(name))
   }
 
+  // change this lol 
+  const keyStyle = (name: NoteName) => ({
+    ...chordButtonStyle,
+    backgroundColor: key == name
+      ? 'orangeRed' 
+      : symmetryKeys?.includes(name)
+        ? 'skyBlue'
+        : ''
+  })
+
   return ( 
     <div 
       ref={divRef}
@@ -82,45 +92,47 @@ const KeySelection = () => {
         position: 'relative'
       }}
     >
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.C ? 'red' : ''}} onClick={() => setKey(NoteName.C)}>
+      <button style={keyStyle(NoteName.C)} onClick={() => setKey(NoteName.C)}>
         C
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.G ? 'red' : ''}} onClick={() => setKey(NoteName.G)}>
+      <button style={keyStyle(NoteName.G)}onClick={() => setKey(NoteName.G)}>
         G
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.D ? 'red' : ''}} onClick={() => setKey(NoteName.D)}>
+      <button style={keyStyle(NoteName.D)} onClick={() => setKey(NoteName.D)}>
         D
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.A ? 'red' : ''}} onClick={() => setKey(NoteName.A)}>
+      <button style={keyStyle(NoteName.A)} onClick={() => setKey(NoteName.A)}>
         A
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.E ? 'red' : ''}} onClick={() => setKey(NoteName.E)}>
+      <button style={keyStyle(NoteName.E)} onClick={() => setKey(NoteName.E)}>
         E
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.B ? 'red' : ''}} onClick={() => setKey(NoteName.B)}>
+      <button style={keyStyle(NoteName.B)} onClick={() => setKey(NoteName.B)}>
         B
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.F_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.F_SHARP)}>
+      <button style={keyStyle(NoteName.F_SHARP)} onClick={() => setKey(NoteName.F_SHARP)}>
         F#
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.C_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.C_SHARP)}>
+      <button style={keyStyle(NoteName.C_SHARP)}onClick={() => setKey(NoteName.C_SHARP)}>
         Db
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.G_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.G_SHARP)}>
+      <button style={keyStyle(NoteName.G_SHARP)} onClick={() => setKey(NoteName.G_SHARP)}>
         Ab
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.D_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.D_SHARP)}>
+      <button style={keyStyle(NoteName.D_SHARP)} onClick={() => setKey(NoteName.D_SHARP)}>
         Eb
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.A_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.A_SHARP)}>
+      <button style={keyStyle(NoteName.A_SHARP)} onClick={() => setKey(NoteName.A_SHARP)}>
         Bb
       </button>
-      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.F ? 'red' : ''}} onClick={() => setKey(NoteName.F)}>
+      <button style={keyStyle(NoteName.F)} onClick={() => setKey(NoteName.F)}>
         F
       </button>
     </div>
   )
 }
+
+
 
 const PatternSelection = () => {
   const pattern = useSelector((state: RootState) => state.playerState.pattern)
@@ -134,7 +146,7 @@ const PatternSelection = () => {
     <div style={sectionStyle}>
       {
         Object.keys(scaleTypeToName).map(k => 
-          <button style={{backgroundColor: k == pattern ? 'red': ''}} onClick={() => setPattern(k)}>
+          <button style={{backgroundColor: k == pattern ? 'orangeRed': ''}} onClick={() => setPattern(k)}>
             {scaleTypeToName[k]}
           </button>
         )  
@@ -144,7 +156,7 @@ const PatternSelection = () => {
 }
 
 const Player = () => {
-  const { scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
+  const { key, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
   
   const dispatch = useDispatch();
 
@@ -169,10 +181,10 @@ const Player = () => {
       <button onClick={playPattern}>
         Play
       </button>
-      <button style={{backgroundColor: showScaleNames ? 'red': ''}} onClick={toggleShowScaleNotes}>
+      <button style={{backgroundColor: showScaleNames ? 'orangeRed': ''}} onClick={toggleShowScaleNotes}>
         Show scale notes
       </button>
-      <button style={{backgroundColor: showChordTones ? 'red': ''}} onClick={toggleShowChordTones}>
+      <button style={{backgroundColor: showChordTones ? 'orangeRed': ''}} onClick={toggleShowChordTones}>
         Show chord tones
       </button>
       {
@@ -184,7 +196,11 @@ const Player = () => {
                     onClick={() => setPlayerChordTone(n)}
                     style={{
                       ...chordButtonStyle,
-                      backgroundColor: chordTones.includes(n) ? 'red': ''
+                      backgroundColor: key == n
+                        ? 'orangeRed'
+                        : chordTones.includes(n) 
+                          ? 'orchid'
+                          : ''
                     }}
                   >
                     {NoteNameToStringMapping[n]}

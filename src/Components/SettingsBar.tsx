@@ -20,7 +20,7 @@ const SettingsBar = () => {
   const dispatch = useDispatch();
 
   return (
-    <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: 'grey' }}>
+    <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: 'slateblue' }}>
       <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
         <div style={{ fontSize: '1.5rem', width: '100%' }}>Find my Fretboard</div>
         <div style={{fontSize: '1rem', flexWrap: 'nowrap', width: '100%', height: '100%', display: 'flex', justifyContent: 'end', flexDirection: 'row', alignItems: 'center', gap: '2rem'}}>

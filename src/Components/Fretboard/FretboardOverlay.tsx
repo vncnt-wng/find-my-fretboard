@@ -145,7 +145,7 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
         height: isHeld || openStringPlaying ? '2px': '1px', 
         width: '100%', 
         backgroundColor: hover || isHeld 
-          ? 'red' 
+          ? 'orangeRed' 
           : openStringPlaying 
             ? 'orange'
             : 'black'
@@ -159,17 +159,22 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
 
 
 const PatternMarker = ({note}: {note: Note}) => {
-  const { scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
-  const highlighted = chordTones.includes(note.name) && showChordTones;
-  const hasMarker = scaleNames.includes(note.name) && showScaleNames;
+  const { key, scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
+  const root = key == note.name;
+  const chordTone = chordTones.includes(note.name) && showChordTones;
+  const scaleNote = scaleNames.includes(note.name) && showScaleNames;
 
-  if (!highlighted && !hasMarker) {
+  if (!root && !chordTone && !scaleNote) {
     return <></>
   }
 
   return (
     <div style={{
-      backgroundColor: highlighted ? 'red' : 'black',
+      backgroundColor: root
+        ? 'orangeRed' 
+        : chordTone
+          ? 'orchid'
+          : 'black',
       borderRadius: '100%',
       height: '8px',
       width: '8px',

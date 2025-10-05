@@ -27,6 +27,7 @@ export const scaleTypeToName: { [key: ScaleType]: string }= {
   '6th_dim_minor': 'minor 6th diminished',  
   'diminished_hw': 'half-whole diminished', 
   'diminished_wh': 'whole-half diminished', 
+  'augmented': 'augmented',
   'wholeTone': 'whole tone'
 }
 
@@ -35,19 +36,34 @@ export const scaleTypeToName: { [key: ScaleType]: string }= {
 const intervalsByScale: { [key: ScaleType]: number[] } = {
   'major': [0, 2, 4, 5, 7, 9, 11],
   '6th_dim': [0, 2, 4, 5, 7, 8, 9, 11],
+  '6th_dim_minor': [0, 2, 3, 5, 7, 8, 9, 11],
+  // 'altered': [0, 1, 3, 4, 6, 8, 10], // 7th mode of melodic minor
   'minor_mel': [0, 2, 3, 5, 7, 9, 11],
   'minor_harm': [0, 2, 3, 5, 7, 8, 11],
-  '6th_dim_minor': [0, 2, 3, 5, 7, 8, 9, 11],
   'diminished_hw': [0, 1, 3, 4, 6, 7, 9, 10],
   'diminished_wh': [0, 2, 3, 5, 6, 8, 9, 11],
-  // 'altered': [0, 1, 3, 4, 6, 8, 10], // 7th mode of melodic minor
+  'augmented': [0, 3, 4, 7, 8, 11],
   'wholeTone': [0, 2, 4, 6, 8, 10],
+}
 
+const symmetryIntervalsByScale: { [key: ScaleType]: number[] } = {
+  'diminished_hw': [3, 6, 9],
+  'diminished_wh': [3, 6, 9],
+  'augmented': [4, 8],
+  'wholeTone': [2, 4, 6, 8, 10],
 }
 
 export const getScaleNames = (name: NoteName, scale: ScaleType) => {
   return intervalsByScale[scale]
     .map((i => noteNameTranspose(name, i)))
+}
+
+export const getSymmetryNotes = (name: NoteName, scale: ScaleType) => {
+  if (!(scale in symmetryIntervalsByScale)) {
+    return [];
+  }
+  const intervals = symmetryIntervalsByScale[scale];
+  return intervals.map(i => noteNameTranspose(name, i))
 }
 
 // TODO should scales just be list of notenames instead of notes?

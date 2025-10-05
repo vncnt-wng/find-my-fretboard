@@ -1,9 +1,10 @@
 import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
 import { NoteName } from "../../MusicModel/note";
-import { getScaleNames, PlayerPattern } from "../../MusicModel/scales";
+import { getScaleNames, getSymmetryNotes, PlayerPattern, ScaleType } from "../../MusicModel/scales";
 
 interface PlayerState {
   key: NoteName,
+  symmetryKeys: NoteName[]
   pattern: PlayerPattern, 
   showScaleNames: boolean,
   showChordTones: boolean,
@@ -21,11 +22,13 @@ const getDefaultChordTones = (scaleNames: NoteName[]) => {
 
 const defaultKey = NoteName.C;
 const defaultPattern = 'major';
+const defaultSymmetry = getSymmetryNotes(defaultKey, defaultPattern);
 const defaultScale = getScaleNames(defaultKey, defaultPattern);
 const defaultChordTones = getDefaultChordTones(defaultScale);
 
 const initialState: PlayerState = {
   key: defaultKey,
+  symmetryKeys: defaultSymmetry,
   pattern: defaultPattern,
   showScaleNames: false,
   showChordTones: false,
@@ -39,14 +42,20 @@ const setNewNotesAndDefaultTones = (state: PlayerState) => {
   state.chordTones = getDefaultChordTones(scaleNames)
 }
 
+const setSymmetry = (state: PlayerState) => {
+  state.symmetryKeys = getSymmetryNotes(state.key, state.pattern);
+}
+
 const setKeyReducer = (state: PlayerState, action: PayloadAction<NoteName>) => {
   state.key = action.payload;
   setNewNotesAndDefaultTones(state);
+  setSymmetry(state);
 }
 
 const setPatternReducer = (state: PlayerState, action: PayloadAction<PlayerPattern>) => {
   state.pattern = action.payload;
   setNewNotesAndDefaultTones(state);
+  setSymmetry(state);
 }
 
 // const setScaleNamesReducer = (state: PlayerState, action: PayloadAction<boolean>) => {
@@ -64,8 +73,6 @@ const setShowChordTonesReducer = (state: PlayerState, action: PayloadAction<bool
 const setChordToneReducer = (state: PlayerState, action: PayloadAction<NoteName>) => {
   const newTones = [...state.chordTones];
   const indexToRemove = newTones.indexOf(action.payload);
-  console.log(action.payload)
-  console.log(indexToRemove)
 
   if (indexToRemove == -1) {
     newTones.push(action.payload);
@@ -73,8 +80,6 @@ const setChordToneReducer = (state: PlayerState, action: PayloadAction<NoteName>
   else {
     newTones.splice(indexToRemove, 1);
   }
-
-  console.log(newTones);
   
   state.chordTones = newTones;
 }

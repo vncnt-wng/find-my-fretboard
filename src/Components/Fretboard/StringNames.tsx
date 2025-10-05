@@ -55,7 +55,7 @@ const StringName = ({ note }: {note: Note}) => {
 
   return (
     <span 
-      style={{ height: '1rem', color: hover || isHeld ? 'red' : 'white' }}
+      style={{ height: '1rem', color: hover || isHeld ? 'orangeRed' : 'white' }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={setOpenString}
