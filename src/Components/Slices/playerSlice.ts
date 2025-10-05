@@ -36,6 +36,12 @@ const initialState: PlayerState = {
   chordTones: defaultChordTones
 }
 
+const setNewNotes = (state: PlayerState) => {
+  const scaleNames = getScaleNames(state.key, state.pattern)
+  state.scaleNames = scaleNames
+  state.chordTones = getDefaultChordTones(scaleNames)
+}
+
 const setNewNotesAndDefaultTones = (state: PlayerState) => {
   const scaleNames = getScaleNames(state.key, state.pattern)
   state.scaleNames = scaleNames

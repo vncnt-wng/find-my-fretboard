@@ -160,7 +160,7 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
 
 const PatternMarker = ({note}: {note: Note}) => {
   const { key, scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
-  const root = key == note.name;
+  const root = key == note.name && showChordTones;
   const chordTone = chordTones.includes(note.name) && showChordTones;
   const scaleNote = scaleNames.includes(note.name) && showScaleNames;
 
