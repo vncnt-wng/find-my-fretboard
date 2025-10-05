@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
-import { setFretSpacing, setStringNum, setHold, setInstrument } from './Slices/fretboardSettingsSlice';
-import { Instrument, InstrumentToStringNumRange } from '../MusicModel/instrument';
+import { setFretSpacing, setStringNum, setHold, setInstrument, setInstrumentType } from './Slices/fretboardSettingsSlice';
+import { Instrument, InstrumentToStringNumRange, InstrumentType } from '../MusicModel/instrument';
 import { clearSelectedNotes } from './Slices/notesSlice';
 
 const settingStyle = {
@@ -15,7 +15,7 @@ const checkboxStyle = {
 }
 
 const SettingsBar = () => {
-  const { constFretSpacing, hold } = useSelector((state: RootState) => state.fretboardSettings);
+  const { constFretSpacing, hold, instrumentType } = useSelector((state: RootState) => state.fretboardSettings);
   const dispatch = useDispatch();
 
   return (
@@ -23,11 +23,16 @@ const SettingsBar = () => {
       <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
         <div style={{ fontSize: '1.5rem', width: '100%' }}>
           find my 
-          <select>
-            <optgroup style={{fontSize: '1.5rem'}}>
-              <option value={Instrument.BASS}>fretboard</option>
-              <option value={Instrument.GUITAR}>keys</option>
-            </optgroup>
+          <select 
+            value={instrumentType}
+            onChange={e => {
+              dispatch(setInstrumentType(Number(e.target.value)))
+            }}
+          >
+            {/* <optgroup style={{fontSize: '1.5rem'}}> */}
+              <option value={InstrumentType.FRETBOARD}>fretboard</option>
+              <option value={InstrumentType.KEYS}>keys</option>
+            {/* </optgroup> */}
           </select>
         </div>
         <div style={{fontSize: '1rem', flexWrap: 'nowrap', width: '100%', height: '100%', display: 'flex', justifyContent: 'end', flexDirection: 'row', alignItems: 'center', gap: '2rem'}}>
@@ -63,7 +68,7 @@ const SettingsBar = () => {
 }
 
 const StringAndInstrumentSelection = () => {
-  const { instrument, stringNum } = useSelector((state: RootState) => state.fretboardSettings);
+  const { stringInstrument: instrument, stringNum } = useSelector((state: RootState) => state.fretboardSettings);
   const stringRange = InstrumentToStringNumRange[instrument];
   const dispatch = useDispatch();
   

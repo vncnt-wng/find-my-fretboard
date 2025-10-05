@@ -120,7 +120,7 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
   const stringPos: StringPosition = { openString: openString, index: fret, openStringIndex: stringIndex}
   const fretboardNote: FretboardNote = { note: note, stringPos: stringPos };
   // TODO this derived state is duplicated in StringSegment
-  const heldPositions = [...useSelector((state: RootState) => state.noteState.selectedNotes)].map(fretNote => fretNote.stringPos!)
+  const heldPositions = [...useSelector((state: RootState) => state.noteState.selectedFretboardNotes)].map(fretNote => fretNote.stringPos!)
 
   const isHeld = stringPositionsContain(stringPos, heldPositions)
   const openStringPlaying = stringPositionsContain({ openString: openString, index: 0, openStringIndex: stringIndex}, heldPositions);
@@ -151,14 +151,14 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
             : 'black'
         // padding:'0.3rem 0' 
       }}/>
-      <PatternMarker note={note} scaleColor="black"/>
+      <PatternMarker note={note} scaleColor="black" position='absolute'/>
     </div>
       
   )
 }
 
 
-export const PatternMarker = ({note, scaleColor = 'black'}: {note: Note, scaleColor: string}) => {
+export const PatternMarker = ({note, scaleColor, position}: {note: Note, scaleColor: string, position: string | undefined}) => {
   const { key, scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
   const root = key == note.name && showChordTones;
   const chordTone = chordTones.includes(note.name) && showChordTones;
@@ -179,7 +179,7 @@ export const PatternMarker = ({note, scaleColor = 'black'}: {note: Note, scaleCo
       borderRadius: '100%',
       height: '8px',
       width: '8px',
-      // position: 'absolute',
+      position: position as 'absolute' | 'relative' | 'fixed' | 'sticky' | 'static',
       left: 0,
       right: 0,
       marginInline: 'auto'

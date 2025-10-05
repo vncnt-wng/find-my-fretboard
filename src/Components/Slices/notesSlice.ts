@@ -4,13 +4,15 @@ import { FretboardNote, stringPositionEq } from '../../MusicModel/instrument';
 import { playNotes } from '../../Audio/play';
 
 interface NoteState {
-  selectedNotes: FretboardNote[],
+  selectedKeyNotes: Note[],
+  selectedFretboardNotes: FretboardNote[],
   // scaleNames: NoteName[],
   // highlightedNames: NoteName[],
 }
 
 const initialState: NoteState = {
-  selectedNotes: [],
+  selectedKeyNotes: [],
+  selectedFretboardNotes: [],
   // scaleNames: [],
   // highlightedNames: [],
   // highlightedNotes: []
@@ -32,42 +34,69 @@ const initialState: NoteState = {
 //   state.highlightedNames = [];
 // }
 
+const clearKeySelectedNotesReducer = (state: NoteState) => {
+  state.selectedKeyNotes = [];
+}
+
+const setKeySingleNoteReducer = (state: NoteState, note: PayloadAction<Note>) => {
+  state.selectedKeyNotes = [note.payload];
+  playNotes(state.selectedKeyNotes);
+}
+
+const setKeyHeldNoteReducer = (state: NoteState, note: PayloadAction<Note>) => {
+  const matchIndex = state.selectedKeyNotes.findIndex(n => noteEq(n, note.payload));
+
+  if (matchIndex != -1) {
+    state.selectedKeyNotes.splice(matchIndex, 1);
+  }
+  else {
+    state.selectedKeyNotes.push(note.payload)
+  }
+  playNotes(state.selectedKeyNotes);
+}
+
+const setKeyHeldNotesReducer = (state: NoteState, notes: PayloadAction<Note[]>) => {
+  // TODO - eventually want to be able to do individually moving voices instead of changing all held notes
+  state.selectedKeyNotes = notes.payload;
+  playNotes(state.selectedKeyNotes);
+}
+
 const clearSelectedNotesReducer = (state: NoteState) => {
-  state.selectedNotes = [];
+  state.selectedFretboardNotes = [];
 }
 
 const setSingleNoteReducer = (state: NoteState, note: PayloadAction<FretboardNote>) => {
-  state.selectedNotes = [note.payload];
-  playNotes(state.selectedNotes.map(n => n.note));
+  state.selectedFretboardNotes = [note.payload];
+  playNotes(state.selectedFretboardNotes.map(n => n.note));
 }
 
 const setHeldNoteReducer = (state: NoteState, note: PayloadAction<FretboardNote>) => {
   if (note.payload.stringPos == null) {
     return;
   }
-  const matchStringIndex = state.selectedNotes.findIndex(
+  const matchStringIndex = state.selectedFretboardNotes.findIndex(
     n => noteEq(n.stringPos!.openString, note.payload.stringPos!.openString)
   );
   if (matchStringIndex == -1) {
-    state.selectedNotes.push(note.payload);
-    playNotes(state.selectedNotes.map(n => n.note));
+    state.selectedFretboardNotes.push(note.payload);
+    playNotes(state.selectedFretboardNotes.map(n => n.note));
   } 
   else
   {
     
-    const matchStringPos = state.selectedNotes[matchStringIndex].stringPos!;
-    state.selectedNotes.splice(matchStringIndex, 1);
+    const matchStringPos = state.selectedFretboardNotes[matchStringIndex].stringPos!;
+    state.selectedFretboardNotes.splice(matchStringIndex, 1);
     if (!stringPositionEq(note.payload.stringPos!, matchStringPos)) {
-      state.selectedNotes.push(note.payload)
-      playNotes(state.selectedNotes.map(n => n.note));
+      state.selectedFretboardNotes.push(note.payload)
+      playNotes(state.selectedFretboardNotes.map(n => n.note));
     }
   }
 }
 
 const setHeldNotesReducer = (state: NoteState, notes: PayloadAction<FretboardNote[]>) => {
   // TODO - eventually want to be able to do individually moving voices instead of changing all held notes
-  state.selectedNotes = notes.payload;
-  playNotes(state.selectedNotes.map(n => n.note));
+  state.selectedFretboardNotes = notes.payload;
+  playNotes(state.selectedFretboardNotes.map(n => n.note));
 }
 
 export const notesSlice = createSlice({
@@ -76,6 +105,10 @@ export const notesSlice = createSlice({
   reducers: {
     // setScaleNames: setScaleNamesReducer,
     // setHighlightedNames: setHighlightedNamesReducer,
+    setKeySingleNote: setKeySingleNoteReducer,
+    setKeyHeldNote: setKeyHeldNoteReducer,
+    setKeyHeldNotes: setKeyHeldNotesReducer,
+    clearKeySelectedNotes: clearKeySelectedNotesReducer,
     setSingleNote: setSingleNoteReducer,
     setHeldNote: setHeldNoteReducer,
     setHeldNotes: setHeldNotesReducer,
@@ -86,6 +119,10 @@ export const notesSlice = createSlice({
 });
 
 export const { 
+  setKeySingleNote,
+  setKeyHeldNote,
+  setKeyHeldNotes,
+  clearKeySelectedNotes,
   // setScaleNames,
   // setHighlightedNames,
   setSingleNote, 

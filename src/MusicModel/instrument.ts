@@ -117,12 +117,15 @@ export const initialiseFretboardMapping = (instrument: Instrument, numStrings: n
 
 export enum Instrument {
   GUITAR = 0,
-  BASS = 1,
-  PIANO = 2
+  BASS = 1
+}
+
+export enum InstrumentType {
+  FRETBOARD = 0,
+  KEYS = 1
 }
 
 export const InstrumentToStringNumRange = {
   [Instrument.GUITAR]: [6, 7],
-  [Instrument.BASS]: [4, 6],
-  [Instrument.PIANO]: [44]
+  [Instrument.BASS]: [4, 6]
 }

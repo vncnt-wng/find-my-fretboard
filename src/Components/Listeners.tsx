@@ -12,7 +12,7 @@ const Listeners = () => {
     const handleKey = (e: KeyboardEvent) => {
       console.log(e);
       if (e.code === "Space") {
-        const selectedNotes = store.getState().noteState.selectedNotes;
+        const selectedNotes = store.getState().noteState.selectedFretboardNotes;
         playNotes(selectedNotes.map(n => n.note));
       }
       if (e.code === "Backspace") {

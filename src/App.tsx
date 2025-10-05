@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
-import { Provider } from 'react-redux';
-import { store } from './app/store';
+import { Provider, useSelector } from 'react-redux';
+import { RootState, store } from './app/store';
 import SettingsBar from './Components/SettingsBar';
 import Fretboard from './Components/Fretboard/FretBoard';
 import SelectedNotes from './Components/SelectedNotes';
@@ -11,6 +11,7 @@ import { makePlayoutPattern } from './MusicModel/makePlayoutPattern';
 import { playPlayoutPattern } from './Audio/play';
 import PatternPlayer from './Components/PatternPlayer/PatternPlayer';
 import Keys from './Components/Keys/Keys';
+import { InstrumentType } from './MusicModel/instrument';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
@@ -34,12 +35,21 @@ const App = () => {
         <SettingsBar />
         <Listeners/>
         <SelectedNotes />
-        <Keys />
-        {/* <Fretboard /> */}
+        <Instrument />
         <PatternPlayer />
       </div>
     </Provider>
   )
+}
+
+const Instrument = () => {
+  const instrumentType = useSelector((state: RootState) => state.fretboardSettings.instrumentType);
+  
+  return instrumentType == InstrumentType.FRETBOARD
+    ? <Fretboard />
+    : InstrumentType.KEYS 
+      ? <Keys />
+      : <></>
 }
 
 

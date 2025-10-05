@@ -1,5 +1,10 @@
+import { useState } from "react";
 import { nextNote, Note, NoteName } from "../../MusicModel/note";
 import { PatternMarker } from "../Fretboard/FretboardOverlay";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../app/store";
+import { stringPositionsContain } from "../../MusicModel/instrument";
+import { setKeyHeldNote, setKeySingleNote } from "../Slices/notesSlice";
 
 const makeKeys = (startingNote: Note, keys: number): Note[] => {
   const result = [];
@@ -14,7 +19,7 @@ const makeKeys = (startingNote: Note, keys: number): Note[] => {
 
 const Keys = () => {
   const keyNum = 60;
-  const startingNote: Note = { name: NoteName.C, octave: 1 }
+  const startingNote: Note = { name: NoteName.C, octave: 2 }
   const keys = makeKeys(startingNote, keyNum);
   
   const blackKeys = [
@@ -68,29 +73,63 @@ const Keys = () => {
                   : undefined
               }}
             >
-              <div 
-                style={{
-                  height:'100%',
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'end',
-                  paddingBottom: '3px',
-                  boxSizing: 'border-box'
-                }}
-              >
-                <PatternMarker note={k} scaleColor={blackKey ? 'white' : 'black'} />
-              </div>
+              <Key note={k} blackKey={blackKey}/>
             </div>
           )
-        }
-          
-        )
+        })
       }
     </div>
   )
 }
 
+const Key = ({note, blackKey}: {note: Note, blackKey: boolean}) => {
+  const [hover, setHover] = useState(false);
+  const dispatch = useDispatch();
+  const { hold } = useSelector((state: RootState) => state.fretboardSettings);
+  const selectedKeysNotes = useSelector((state: RootState) => state.noteState.selectedKeyNotes)
+
+  const held = selectedKeysNotes.includes(note);
+
+  const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
+    console.log(note);
+    if (hold) {
+      dispatch(setKeyHeldNote(note));
+    } else {
+      dispatch(setKeySingleNote(note));
+    }
+  }
+
+  return (
+    <div 
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={setNote}
+      style={{
+        height:'100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'end',
+        paddingBottom: '3px',
+        boxSizing: 'border-box',
+        backgroundColor: hover && held
+          ? 'tomato'
+          : hover 
+            ? 'orange'
+            : held 
+              ? 'orangered'
+              : '' 
+   
+      }}
+    >
+      <PatternMarker 
+        note={note} 
+        scaleColor={blackKey ? 'white' : 'black'} 
+        position={undefined}
+      />
+    </div>
+  )
+}
 
 
 export default Keys;

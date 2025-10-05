@@ -38,7 +38,7 @@ const StringName = ({ note }: {note: Note}) => {
   const [hover, setHover] = useState(false);
   // TODO this derived state is duplicated in StringSegment
   const hold = useSelector((state: RootState) => state.fretboardSettings.hold);
-  const heldPositions = [...useSelector((state: RootState) => state.noteState.selectedNotes)].map(fretNote => fretNote.stringPos!)
+  const heldPositions = [...useSelector((state: RootState) => state.noteState.selectedFretboardNotes)].map(fretNote => fretNote.stringPos!)
   const name = NoteNameToStringMapping[note.name];
   const stringPos = {openString: note, index: 0, openStringIndex: 0 } 
   const isHeld = stringPositionsContain(stringPos, heldPositions)
