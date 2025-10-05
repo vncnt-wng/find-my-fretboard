@@ -5,33 +5,32 @@ import { playNotes } from '../../Audio/play';
 
 interface NoteState {
   selectedNotes: FretboardNote[],
-  scaleNames: NoteName[],
-  highlightedNames: NoteName[],
-  highlightedNotes: Note[] // need to figure out how UX of all these together will work
+  // scaleNames: NoteName[],
+  // highlightedNames: NoteName[],
 }
 
 const initialState: NoteState = {
   selectedNotes: [],
-  scaleNames: [],
-  highlightedNames: [],
-  highlightedNotes: []
+  // scaleNames: [],
+  // highlightedNames: [],
+  // highlightedNotes: []
 }
 
-const setScaleNamesReducer = (state: NoteState, action: PayloadAction<NoteName[]>) => {
-  state.scaleNames = action.payload;
-}
+// const setScaleNamesReducer = (state: NoteState, action: PayloadAction<NoteName[]>) => {
+//   state.scaleNames = action.payload;
+// }
 
-const setHighlightedNamesReducer = (state: NoteState, action: PayloadAction<NoteName[]>) => {
-  state.highlightedNames = action.payload;
-}
+// const setHighlightedNamesReducer = (state: NoteState, action: PayloadAction<NoteName[]>) => {
+//   state.highlightedNames = action.payload;
+// }
 
-const clearScaleNamesReducer = (state: NoteState) => {
-  state.scaleNames = [];
-}
+// const clearScaleNamesReducer = (state: NoteState) => {
+//   state.scaleNames = [];
+// }
 
-const clearHighlightedNamesReducer = (state: NoteState) => {
-  state.highlightedNames = [];
-}
+// const clearHighlightedNamesReducer = (state: NoteState) => {
+//   state.highlightedNames = [];
+// }
 
 const clearSelectedNotesReducer = (state: NoteState) => {
   state.selectedNotes = [];
@@ -75,25 +74,25 @@ export const notesSlice = createSlice({
   name: 'notesStateSlice',
   initialState,
   reducers: {
-    setScaleNames: setScaleNamesReducer,
-    setHighlightedNames: setHighlightedNamesReducer,
+    // setScaleNames: setScaleNamesReducer,
+    // setHighlightedNames: setHighlightedNamesReducer,
     setSingleNote: setSingleNoteReducer,
     setHeldNote: setHeldNoteReducer,
     setHeldNotes: setHeldNotesReducer,
     clearSelectedNotes: clearSelectedNotesReducer,
-    clearScaleNames: clearScaleNamesReducer,
-    clearHighlightedNames: clearHighlightedNamesReducer,
+    // clearScaleNames: clearScaleNamesReducer,
+    // clearHighlightedNames: clearHighlightedNamesReducer,
   }
 });
 
 export const { 
-  setScaleNames,
-  setHighlightedNames,
+  // setScaleNames,
+  // setHighlightedNames,
   setSingleNote, 
   setHeldNote, 
   setHeldNotes, 
-  clearScaleNames,
-  clearHighlightedNames,
+  // clearScaleNames,
+  // clearHighlightedNames,
   clearSelectedNotes
 } = notesSlice.actions;
 

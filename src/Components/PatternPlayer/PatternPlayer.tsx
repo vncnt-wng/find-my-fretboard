@@ -1,9 +1,8 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../app/store"
-import { NoteName } from "../../MusicModel/note"
-import { getScaleNames, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
-import { setPlayerKey, setPlayerPattern } from "../Slices/playerSlice"
-import { clearHighlightedNames, clearScaleNames, setHighlightedNames, setScaleNames } from "../Slices/notesSlice"
+import { NoteName, NoteNameToStringMapping } from "../../MusicModel/note"
+import { ScaleType, scaleTypeToName } from "../../MusicModel/scales"
+import { setChordTone, setPlayerKey, setPlayerPattern, setShowChordTones, setShowScaleName } from "../Slices/playerSlice"
 import { useEffect, useRef } from "react"
 
 const PatternPlayer = () => {
@@ -40,13 +39,13 @@ const sectionStyle: React.CSSProperties = {
 const chordButtonStyle: React.CSSProperties = {
   width: '35px',
   height: '35px',
-  borderRadius: '100%',
-  position: 'absolute'
+  borderRadius: '100%'
 }
 
 
 
 const KeySelection = () => {
+  const key = useSelector((state: RootState) => state.playerState.key)
   const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
 
@@ -54,16 +53,14 @@ const KeySelection = () => {
     if (divRef.current) {
       const { width, height } = divRef.current.getBoundingClientRect();
       const radius = Math.min(width, height) / 2 - 20;
-      console.log(radius)
       const keyDivs = Array.from(divRef.current.children) as HTMLElement[];
       for (var i = 0; i < keyDivs.length; i++)
       {
         const current = keyDivs[i];
         const offset = current.getBoundingClientRect().height / 2;
         const angle = (- Math.PI / 2) + (2 * Math.PI / keyDivs.length * i);
-        const x = - offset + (width / 2) + radius * Math.cos(angle);
-        const y = - offset + (height / 2) + radius * Math.sin(angle);
-        console.log(x, y)
+        const x = (width / 2) - offset + radius * Math.cos(angle);
+        const y = (height / 2) - offset + radius * Math.sin(angle);
         current.style.left = `${x.toString()}px`;
         current.style.top = `${y.toString()}px`;
         current.style.position = 'absolute'
@@ -74,8 +71,6 @@ const KeySelection = () => {
 
   const setKey = (name: NoteName) => {
     dispatch(setPlayerKey(name))
-    dispatch(clearScaleNames())
-    dispatch(clearHighlightedNames())
   }
 
   return ( 
@@ -87,40 +82,40 @@ const KeySelection = () => {
         position: 'relative'
       }}
     >
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.C)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.C ? 'red' : ''}} onClick={() => setKey(NoteName.C)}>
         C
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.G)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.G ? 'red' : ''}} onClick={() => setKey(NoteName.G)}>
         G
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.D)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.D ? 'red' : ''}} onClick={() => setKey(NoteName.D)}>
         D
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.A)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.A ? 'red' : ''}} onClick={() => setKey(NoteName.A)}>
         A
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.E)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.E ? 'red' : ''}} onClick={() => setKey(NoteName.E)}>
         E
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.B)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.B ? 'red' : ''}} onClick={() => setKey(NoteName.B)}>
         B
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.F_SHARP)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.F_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.F_SHARP)}>
         F#
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.C_SHARP)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.C_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.C_SHARP)}>
         Db
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.G_SHARP)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.G_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.G_SHARP)}>
         Ab
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.D_SHARP)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.D_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.D_SHARP)}>
         Eb
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.A_SHARP)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.A_SHARP ? 'red' : ''}} onClick={() => setKey(NoteName.A_SHARP)}>
         Bb
       </button>
-      <button style={chordButtonStyle} onClick={() => setKey(NoteName.F)}>
+      <button style={{...chordButtonStyle, backgroundColor: key == NoteName.F ? 'red' : ''}} onClick={() => setKey(NoteName.F)}>
         F
       </button>
     </div>
@@ -128,6 +123,7 @@ const KeySelection = () => {
 }
 
 const PatternSelection = () => {
+  const pattern = useSelector((state: RootState) => state.playerState.pattern)
   const dispatch = useDispatch();
 
   const setPattern = (scaleType: ScaleType) => {
@@ -138,7 +134,7 @@ const PatternSelection = () => {
     <div style={sectionStyle}>
       {
         Object.keys(scaleTypeToName).map(k => 
-          <button onClick={() => setPattern(k)}>
+          <button style={{backgroundColor: k == pattern ? 'red': ''}} onClick={() => setPattern(k)}>
             {scaleTypeToName[k]}
           </button>
         )  
@@ -148,28 +144,24 @@ const PatternSelection = () => {
 }
 
 const Player = () => {
-  const { noteState, playerState } = useSelector((state: RootState) => state);
-  const { key, pattern } = playerState;
+  const { scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
+  
   const dispatch = useDispatch();
-
-  const scaleNames = getScaleNames(key, pattern);
 
   const playPattern = () => {
 
   }
 
-  const showScaleNotes = () => {
-    console.log(scaleNames)
-    dispatch(setScaleNames(scaleNames))
+  const toggleShowScaleNotes = () => {
+    dispatch(setShowScaleName(!showScaleNames))
   }
 
-  const showChordTones = () => {
-    const chordTones = []
-    for (var i = 0; i < scaleNames.length; i += 2) {
-      chordTones.push(scaleNames[i]);
-    }
-    console.log(chordTones);
-    dispatch(setHighlightedNames(chordTones));
+  const toggleShowChordTones = () => {
+    dispatch(setShowChordTones(!showChordTones))
+  }
+
+  const setPlayerChordTone = (noteName: NoteName) => {
+    dispatch(setChordTone(noteName))
   }
 
   return ( 
@@ -177,12 +169,31 @@ const Player = () => {
       <button onClick={playPattern}>
         Play
       </button>
-      <button onClick={showScaleNotes}>
+      <button style={{backgroundColor: showScaleNames ? 'red': ''}} onClick={toggleShowScaleNotes}>
         Show scale notes
       </button>
-      <button onClick={showChordTones}>
+      <button style={{backgroundColor: showChordTones ? 'red': ''}} onClick={toggleShowChordTones}>
         Show chord tones
       </button>
+      {
+        showChordTones 
+          ? <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px'}}>
+              {
+                scaleNames.map(n => (
+                  <button 
+                    onClick={() => setPlayerChordTone(n)}
+                    style={{
+                      ...chordButtonStyle,
+                      backgroundColor: chordTones.includes(n) ? 'red': ''
+                    }}
+                  >
+                    {NoteNameToStringMapping[n]}
+                  </button>
+                ))
+              }
+            </div>
+          : <></> 
+      }
     </div>
   )
 }
