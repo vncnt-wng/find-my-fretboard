@@ -4,9 +4,9 @@ import { FretboardMapping, initialiseFretboardMapping, Instrument, InstrumentToS
 
 interface FretboardSettings {
   instrument: Instrument,
+  hold: boolean,
   constFretSpacing: boolean,
   stringNum: number,
-  hold: boolean,
   fretboardMapping: FretboardMapping
 }
 

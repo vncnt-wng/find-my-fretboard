@@ -10,6 +10,7 @@ import { NoteName } from './MusicModel/note';
 import { makePlayoutPattern } from './MusicModel/makePlayoutPattern';
 import { playPlayoutPattern } from './Audio/play';
 import PatternPlayer from './Components/PatternPlayer/PatternPlayer';
+import Keys from './Components/Keys/Keys';
 
 const pageContainerStyle: CSSProperties = {
   backgroundColor: '#233040',
@@ -33,7 +34,8 @@ const App = () => {
         <SettingsBar />
         <Listeners/>
         <SelectedNotes />
-        <Fretboard />
+        <Keys />
+        {/* <Fretboard /> */}
         <PatternPlayer />
       </div>
     </Provider>

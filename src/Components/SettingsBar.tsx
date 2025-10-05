@@ -15,27 +15,34 @@ const checkboxStyle = {
 }
 
 const SettingsBar = () => {
-  const fretboardSpacing = useSelector((state: RootState) => state.fretboardSettings.constFretSpacing);
-  const hold = useSelector((state: RootState) => state.fretboardSettings.hold);
+  const { constFretSpacing, hold } = useSelector((state: RootState) => state.fretboardSettings);
   const dispatch = useDispatch();
 
   return (
     <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: 'slateblue' }}>
       <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
-        <div style={{ fontSize: '1.5rem', width: '100%' }}>Find my Fretboard</div>
+        <div style={{ fontSize: '1.5rem', width: '100%' }}>
+          find my 
+          <select>
+            <optgroup style={{fontSize: '1.5rem'}}>
+              <option value={Instrument.BASS}>fretboard</option>
+              <option value={Instrument.GUITAR}>keys</option>
+            </optgroup>
+          </select>
+        </div>
         <div style={{fontSize: '1rem', flexWrap: 'nowrap', width: '100%', height: '100%', display: 'flex', justifyContent: 'end', flexDirection: 'row', alignItems: 'center', gap: '2rem'}}>
           <div style={settingStyle}>
-              Constant Width Frets: 
+              constant width frets: 
               <input 
                 style={checkboxStyle}
-                checked={fretboardSpacing} 
+                checked={constFretSpacing} 
                 onChange={e => dispatch(setFretSpacing(e.target.checked))} 
                 type="checkbox"
               />
           </div>
           <StringAndInstrumentSelection />
           <div style={settingStyle}>
-            Hold notes: 
+            hold notes: 
             <input
               style={checkboxStyle}
               checked={hold} 
