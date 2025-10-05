@@ -4,4 +4,4 @@ a practice tool to help learn the bass/guitar fretboard.
 written in React with Redux
 https://find-my-fretboard.netlify.app/
 
-<img width="1440" height="808" alt="Screenshot 2025-09-27 at 05 34 18" src="https://github.com/user-attachments/assets/303bd3a9-a336-4134-b1e0-eb7a434618d3" />
+<img width="1440" height="729" alt="Screenshot 2025-10-05 at 17 35 08" src="https://github.com/user-attachments/assets/780d790f-e56f-4c73-9123-70ffd9a31fe4" />
