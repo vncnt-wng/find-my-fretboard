@@ -50,10 +50,14 @@ const KeySelection = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (divRef.current) {
-      const { width, height } = divRef.current.getBoundingClientRect();
+    if (!divRef.current) {
+      return;
+    }
+
+    const drawCircleFifths = new ResizeObserver(() => {
+      const { width, height } = divRef.current!.getBoundingClientRect();
       const radius = Math.min(width, height) / 2 - 20;
-      const keyDivs = Array.from(divRef.current.children) as HTMLElement[];
+      const keyDivs = Array.from(divRef.current!.children) as HTMLElement[];
       for (var i = 0; i < keyDivs.length; i++)
       {
         const current = keyDivs[i];
@@ -65,8 +69,11 @@ const KeySelection = () => {
         current.style.top = `${y.toString()}px`;
         current.style.position = 'absolute'
       }
-    }
+    })
 
+    drawCircleFifths.observe(divRef.current);
+    
+    return () => drawCircleFifths.disconnect();
   }, [])
 
   const setKey = (name: NoteName) => {
