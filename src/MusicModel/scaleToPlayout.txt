@@ -1,0 +1,10 @@
+NotePattern = Note[][]
+
+makeScale(...): NotePattern 
+
+PatternMapping = FretboardNote[][]
+getPatternMapping(NotePattern, PatternMappingContext): PatternMapping
+
+makePlayoutPattern(PatternMapping, PatternMappingContext): PlayoutPattern
+
+playPlayoutPattern(PlayoutPattern)

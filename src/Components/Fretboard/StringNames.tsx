@@ -87,6 +87,7 @@ const EditingNotes = ({setEditing} : {setEditing: any}) => {
 
   const resetToDefault = () => {
     dispatch(resetDefaultTurning())
+    setEditing(false);
   }
 
   return (
@@ -107,7 +108,6 @@ const EditingNotes = ({setEditing} : {setEditing: any}) => {
                     value={note}
                   />
                 </div>
-                
             )
           })
         }

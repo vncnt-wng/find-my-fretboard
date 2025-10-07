@@ -73,14 +73,21 @@ export const getSymmetryNotes = (name: NoteName, scale: ScaleType) => {
 }
 
 // TODO should scales just be list of notenames instead of notes?
-export const makeScale = (name: NoteName, scale: ScaleType, startOctave: number, octaves: number): Note[] => {
-  const start: Note = {name: name, octave: startOctave }
-  const notes = [start];
+export const makeScale = (modeRoot: NoteName, scale: ScaleType, mode: number, startOctave: number, octaves: number): NotePattern => {
+  const start: Note = {name: modeRoot, octave: startOctave }
+  const notes: NotePattern = [];
   const intervals = intervalsByScale[scale]
+  const modeIntervals = intervals
+    .slice(mode)
+    .concat(intervals.slice(0, mode).map(i => i + 12))
+    .map(i => i - intervals[mode])
 
   for (var i = 0; i < octaves; i++) {
-    for (var j = 0; j < intervals.length; j++) {
-      notes.push(noteTranspose(start, intervals[j] + i * 12))
+    for (var j = 0; j < modeIntervals.length; j++) {
+      notes.push([noteTranspose(start, modeIntervals[j] + i * 12)])
+    }
+    if (i == octaves - 1) {
+      notes.push([{name: modeRoot, octave: startOctave + octaves}])
     }
   }
 

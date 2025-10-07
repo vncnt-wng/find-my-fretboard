@@ -70,6 +70,7 @@ export interface FretboardMapping {
   stringNotesByIndex: Note[][]
   // key is a string created by note, in lieu of proper hashing in ts
   stringPosByNote: Map<string, StringPosition[]>
+  noteRange: [Note, Note]
 }
 
 export const initialiseFretboardMapping = (instrument: Instrument, numStrings: number, numFrets: number = 24, customTuning: Note[] | null = null): FretboardMapping => {
@@ -108,7 +109,11 @@ export const initialiseFretboardMapping = (instrument: Instrument, numStrings: n
     openStrings: openStrings,
     indexNotesByString: indexNotesByString,
     stringNotesByIndex: stringNotesByIndex,
-    stringPosByNote: stringIndicies
+    stringPosByNote: stringIndicies,
+    noteRange: [
+      indexNotesByString[0][0], 
+      indexNotesByString[numStrings - 1][numFrets - 1]
+    ] as [Note, Note]
   };
 
   return result;

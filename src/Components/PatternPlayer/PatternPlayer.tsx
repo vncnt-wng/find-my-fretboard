@@ -1,9 +1,13 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../app/store"
 import { NoteName, NoteNameToStringMapping } from "../../MusicModel/note"
-import { modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
+import { makeScale, modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
 import { setChordTone, setPlayerKey, setPlayerPattern, setShowChordTones, setShowScaleName } from "../Slices/playerSlice"
 import { useEffect, useRef } from "react"
+import { getPatternMapping } from "../../MusicModel/noteToFretboardMapping"
+import { UserPatternPreferences } from "../../MusicModel/pattern"
+import { makePlayoutPattern } from "../../MusicModel/makePlayoutPattern"
+import { playPlayoutPattern } from "../../Audio/play"
 
 const PatternPlayer = () => {
   return (
@@ -13,16 +17,30 @@ const PatternPlayer = () => {
       backgroundColor: 'mediumSlateBlue', 
       borderRadius: '10px',
       display: 'grid',
-      gridTemplateColumns: '1fr 2fr 2fr',
+      gridTemplateColumns: '1fr 0fr 2fr 0fr 2fr',
       justifyContent: 'spaceBetween',
       alignItems: 'center',
       padding: '20px',
-      gap: '20px'
+      gap: '20px',
+      borderTop: 'solid 3px grey',
+      borderLeft: 'solid 3px grey',
+      borderRight: 'solid 3px black',
+      borderBottom: 'solid 3px black',
     }}>
       <KeySelection />
+      <Divider />
       <PatternSelection />
+      <Divider />
       <Player />
     </div>
+  )
+}
+
+const Divider = () => {
+  return (
+    <div
+      style={{width: '2px', height: '105%', backgroundColor: 'white'}}
+    />
   )
 }
 
@@ -175,12 +193,33 @@ const PatternSelection = () => {
 }
 
 const Player = () => {
-  const { key, modeRoot, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
+  const { fretboardMapping } = useSelector((state: RootState) => state.fretboardSettings);
+  const { noteRange } = fretboardMapping; 
+  const { key, pattern, mode, modeRoot, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
   
   const dispatch = useDispatch();
 
-  const playPattern = () => {
+  const defaultPrefs: UserPatternPreferences = {
+    stretch: 3,
+    skipWeight: 0.9,
+    shiftWeight: 0.7,
+    openStringWeight: 1.0,
+  }
 
+  const playPattern = () => {
+    const lowOctave = modeRoot >= noteRange[0].name
+        ? noteRange[0].octave
+        : noteRange[0].octave + 1
+    
+    const highOctave = modeRoot <= noteRange[1].name
+        ? noteRange[1].octave
+        : noteRange[1].octave - 1
+    
+    // generate longest possible for now
+    const scale = makeScale(modeRoot, pattern as ScaleType, mode, lowOctave, highOctave - lowOctave)
+    const ctx = { fretboardMapping: fretboardMapping, settings: defaultPrefs }
+    const playoutPattern = makePlayoutPattern(scale, ctx);
+    playPlayoutPattern(playoutPattern);
   }
 
   const toggleShowScaleNotes = () => {
