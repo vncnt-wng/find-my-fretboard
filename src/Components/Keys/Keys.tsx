@@ -30,15 +30,15 @@ const Keys = () => {
     NoteName.A_SHARP
   ]
 
-  const blackKeyWidth = 14;
-  const whiteKeyWidth = 24;
+  const blackKeyWidth = 16;
+  const whiteKeyWidth = 26;
 
   return (
     <div style={{ 
       display: 'flex', 
       flexDirection: 'row', 
       justifyContent: 'center',
-      height: '100px',
+      height: '110px',
       // width: '90%', 
       boxSizing: 'border-box',
       color: 'white',
@@ -63,8 +63,8 @@ const Keys = () => {
                   ? `${blackKeyWidth}px`
                   : `${whiteKeyWidth}px`,
                 height: blackKey
-                  ? '65px'
-                  : '100px',
+                  ? '70px'
+                  : '110px',
                 position: blackKey
                   ? 'absolute'
                   : undefined,

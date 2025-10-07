@@ -1,16 +1,22 @@
 import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { noteCmp, NoteNameToStringMapping } from '../MusicModel/note';
+import { InstrumentType } from '../MusicModel/instrument';
 
 const SelectedNotes = () => {
-  const selectedNotes = useSelector((state: RootState) => state.noteState.selectedFretboardNotes);
+  const instrumentType = useSelector((state: RootState) => state.fretboardSettings.instrumentType);
+  const { selectedKeyNotes, selectedFretboardNotes } = useSelector((state: RootState) => state.noteState)
+  const selectedNotes = instrumentType == InstrumentType.KEYS
+    ? selectedKeyNotes
+    : selectedFretboardNotes.map(fn => fn.note)
+
   // move to reducer? 
-  const sortedSelection = [...selectedNotes].sort((a, b) => noteCmp(a.note, b.note));
+  const sortedSelection = [...selectedNotes].sort((a, b) => noteCmp(a, b));
 
   return (
     <div style={{ height: '3rem', fontSize: '3rem', textAlign: 'center' }}>
       {sortedSelection.map(n => 
-        `${NoteNameToStringMapping[n.note.name]}${n.note.octave}`).join(', ')
+        `${NoteNameToStringMapping[n.name]}${n.octave}`).join(', ')
       }
     </div>
   )

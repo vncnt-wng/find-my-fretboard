@@ -16,7 +16,7 @@ const Fretboard = (): ReactElement => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '1rem', width: '90%', boxSizing: 'border-box' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', width: '90%', boxSizing: 'border-box' }}>
       <StringNames />
       <div style={fretboardStyle}>
         <FretboardOverlay />

@@ -1,11 +1,13 @@
 import { createSlice, Dispatch, PayloadAction } from "@reduxjs/toolkit";
-import { NoteName } from "../../MusicModel/note";
+import { NoteName, noteNameIntervalSemis, noteNameTranspose } from "../../MusicModel/note";
 import { getScaleNames, getSymmetryNotes, PlayerPattern, ScaleType } from "../../MusicModel/scales";
 
 interface PlayerState {
   key: NoteName,
+  modeRoot: NoteName,
   symmetryKeys: NoteName[]
   pattern: PlayerPattern, 
+  mode: number,
   showScaleNames: boolean,
   showChordTones: boolean,
   scaleNames: NoteName[],
@@ -28,8 +30,10 @@ const defaultChordTones = getDefaultChordTones(defaultScale);
 
 const initialState: PlayerState = {
   key: defaultKey,
+  modeRoot: 0,
   symmetryKeys: defaultSymmetry,
   pattern: defaultPattern,
+  mode: 0,
   showScaleNames: false,
   showChordTones: false,
   scaleNames: defaultScale,
@@ -38,14 +42,18 @@ const initialState: PlayerState = {
 
 const setNewNotes = (state: PlayerState) => {
   const scaleNames = getScaleNames(state.key, state.pattern)
-  state.scaleNames = scaleNames
-  state.chordTones = getDefaultChordTones(scaleNames)
+  const modeNames = scaleNames.slice(state.mode, scaleNames.length).concat(scaleNames.slice(0, state.mode))
+  state.scaleNames = modeNames
+  state.modeRoot = modeNames[0];
+}
+
+const setDefaultChordTones = (state: PlayerState) => {
+  state.chordTones = getDefaultChordTones(state.scaleNames)
 }
 
 const setNewNotesAndDefaultTones = (state: PlayerState) => {
-  const scaleNames = getScaleNames(state.key, state.pattern)
-  state.scaleNames = scaleNames
-  state.chordTones = getDefaultChordTones(scaleNames)
+  setNewNotes(state);
+  setDefaultChordTones(state);
 }
 
 const setSymmetry = (state: PlayerState) => {
@@ -53,13 +61,22 @@ const setSymmetry = (state: PlayerState) => {
 }
 
 const setKeyReducer = (state: PlayerState, action: PayloadAction<NoteName>) => {
+  const currentChordToneIntervals = state.chordTones.map(n => noteNameIntervalSemis(state.key, n));
   state.key = action.payload;
-  setNewNotesAndDefaultTones(state);
+  setNewNotes(state);
   setSymmetry(state);
+  const newChordTones = currentChordToneIntervals.map(i => noteNameTranspose(state.key, i))
+  state.chordTones = newChordTones
 }
 
-const setPatternReducer = (state: PlayerState, action: PayloadAction<PlayerPattern>) => {
-  state.pattern = action.payload;
+export interface PatternMode {
+  pattern: PlayerPattern,
+  mode: number
+}
+
+const setPatternReducer = (state: PlayerState, action: PayloadAction<PatternMode>) => {
+  state.pattern = action.payload.pattern
+  state.mode = action.payload.mode
   setNewNotesAndDefaultTones(state);
   setSymmetry(state);
 }

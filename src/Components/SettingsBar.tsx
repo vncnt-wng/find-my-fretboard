@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 import { setFretSpacing, setStringNum, setHold, setInstrument, setInstrumentType } from './Slices/fretboardSettingsSlice';
 import { Instrument, InstrumentToStringNumRange, InstrumentType } from '../MusicModel/instrument';
-import { clearSelectedNotes } from './Slices/notesSlice';
+import { clearKeySelectedNotes, clearSelectedNotes } from './Slices/notesSlice';
 
 const settingStyle = {
   display: 'flex',
@@ -18,52 +18,63 @@ const SettingsBar = () => {
   const { constFretSpacing, hold, instrumentType } = useSelector((state: RootState) => state.fretboardSettings);
   const dispatch = useDispatch();
 
+  const handleSetInstrumentType = (instrumentType: InstrumentType) => {
+    dispatch(setInstrumentType(instrumentType));
+    // TODO handle converting between these two
+    dispatch(clearSelectedNotes())
+    dispatch(clearKeySelectedNotes())
+  }
+
   return (
-    <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: 'slateblue' }}>
-      <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
-        <div style={{ fontSize: '1.5rem', width: '100%' }}>
-          find my 
-          <select 
-            value={instrumentType}
-            onChange={e => {
-              dispatch(setInstrumentType(Number(e.target.value)))
-            }}
-          >
-            {/* <optgroup style={{fontSize: '1.5rem'}}> */}
-              <option value={InstrumentType.FRETBOARD}>fretboard</option>
-              <option value={InstrumentType.KEYS}>keys</option>
-            {/* </optgroup> */}
-          </select>
-        </div>
-        <div style={{fontSize: '1rem', flexWrap: 'nowrap', width: '100%', height: '100%', display: 'flex', justifyContent: 'end', flexDirection: 'row', alignItems: 'center', gap: '2rem'}}>
-          <div style={settingStyle}>
-              constant width frets: 
-              <input 
-                style={checkboxStyle}
-                checked={constFretSpacing} 
-                onChange={e => dispatch(setFretSpacing(e.target.checked))} 
-                type="checkbox"
-              />
-          </div>
-          <StringAndInstrumentSelection />
-          <div style={settingStyle}>
-            hold notes: 
-            <input
-              style={checkboxStyle}
-              checked={hold} 
+    <>
+      <div style={{height: '5rem'}}></div>
+      <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: 'slateblue' }}>
+        <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
+          <div style={{ fontSize: '1.5rem', width: '100%' }}>
+            find my 
+            <select 
+              value={instrumentType}
               onChange={e => {
-                dispatch(setHold(e.target.checked))
-                if (!e.target.checked) {
-                  dispatch(clearSelectedNotes())
-                }
-              }} 
-              type="checkbox" 
-            />
+                handleSetInstrumentType(Number(e.target.value))
+              }}
+            >
+              {/* <optgroup style={{fontSize: '1.5rem'}}> */}
+                <option value={InstrumentType.FRETBOARD}>fretboard</option>
+                <option value={InstrumentType.KEYS}>keys</option>
+              {/* </optgroup> */}
+            </select>
+          </div>
+          <div style={{fontSize: '1rem', flexWrap: 'nowrap', width: '100%', height: '100%', display: 'flex', justifyContent: 'end', flexDirection: 'row', alignItems: 'center', gap: '2rem'}}>
+            <div style={settingStyle}>
+                constant width frets: 
+                <input 
+                  style={checkboxStyle}
+                  checked={constFretSpacing} 
+                  onChange={e => dispatch(setFretSpacing(e.target.checked))} 
+                  type="checkbox"
+                />
+            </div>
+            <StringAndInstrumentSelection />
+            <div style={settingStyle}>
+              hold notes: 
+              <input
+                style={checkboxStyle}
+                checked={hold} 
+                onChange={e => {
+                  dispatch(setHold(e.target.checked))
+                  if (!e.target.checked) {
+                    dispatch(clearSelectedNotes())
+                    dispatch(clearKeySelectedNotes())
+                  }
+                }} 
+                type="checkbox" 
+              />
+            </div>
           </div>
         </div>
+        
       </div>
-      
-    </div>
+    </>
   )
 }
 

@@ -34,6 +34,11 @@ export interface Note {
 }
 
 
+export const noteNameIntervalSemis = (lower: NoteName, higher: NoteName) => {
+  // add 12 to higher to avoid having to deal with negative modulo weirdness
+  return ((higher + 12) % 12 - lower);
+}
+
 export const nextNote = (note: Note): Note => {
   const nextName = (note.name + 1) % 12;
   const nextOctave = nextName === NoteName.C ? note.octave + 1 : note.octave;

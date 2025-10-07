@@ -19,27 +19,37 @@ const FretboardOverlay = (): ReactElement => {
   const { fretboardMapping, constFretSpacing, stringNum } = fretboardSettings;
 
   useEffect(() => {
-    if (widthRef.current?.offsetWidth) {
-      const divWidth = widthRef.current?.offsetWidth;
-      let currentNoteStringLength = divWidth * 4 / 3;
-      const widths: number[] = [];
-      const noteStringLengths: number[] = [currentNoteStringLength];
-      for (var i = 1; i <= 24; i++) {
-        if (constFretSpacing) {
-          widths.push(divWidth / 24)
-        } else {
-          // f = c/(2L) -- c is some constant we don't care about 
-          // up one semitone:
-          // 2^(1/12) * f / f = l / l'
-          // l' = l / 2^(1/12)
-          // I just realised why does anyone case if the frets are spaced as they should,,, apparently I do I guess
-          currentNoteStringLength = currentNoteStringLength / Math.pow(2, 1 / 12);
-          widths.push(noteStringLengths[noteStringLengths.length - 1] - currentNoteStringLength);
-          noteStringLengths.push(currentNoteStringLength);
-        }
-        setNoteWidths(widths);
-      }
+    if (!widthRef.current) {
+      return;
     }
+
+    const observer = new ResizeObserver(() => {
+      if (widthRef.current?.offsetWidth) {
+        const divWidth = widthRef.current?.offsetWidth;
+        let currentNoteStringLength = divWidth * 4 / 3;
+        const widths: number[] = [];
+        const noteStringLengths: number[] = [currentNoteStringLength];
+        for (var i = 1; i <= 24; i++) {
+          if (constFretSpacing) {
+            widths.push(divWidth / 24)
+          } else {
+            // f = c/(2L) -- c is some constant we don't care about 
+            // up one semitone:
+            // 2^(1/12) * f / f = l / l'
+            // l' = l / 2^(1/12)
+            // I just realised why does anyone case if the frets are spaced as they should,,, apparently I do I guess
+            currentNoteStringLength = currentNoteStringLength / Math.pow(2, 1 / 12);
+            widths.push(noteStringLengths[noteStringLengths.length - 1] - currentNoteStringLength);
+            noteStringLengths.push(currentNoteStringLength);
+          }
+          setNoteWidths(widths);
+        }
+      }
+    })
+
+    observer.observe(widthRef.current);
+
+    return () => observer.disconnect();
   }, [widthRef.current?.offsetWidth, constFretSpacing]);
 
   const fretMarkerIndicies = [2, 4, 6, 8];
@@ -159,8 +169,8 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
 
 
 export const PatternMarker = ({note, scaleColor, position}: {note: Note, scaleColor: string, position: string | undefined}) => {
-  const { key, scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
-  const root = key == note.name && showChordTones;
+  const { modeRoot, scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
+  const root = modeRoot == note.name && showChordTones;
   const chordTone = chordTones.includes(note.name) && showChordTones;
   const scaleNote = scaleNames.includes(note.name) && showScaleNames;
 

@@ -46,6 +46,12 @@ const intervalsByScale: { [key: ScaleType]: number[] } = {
   'wholeTone': [0, 2, 4, 6, 8, 10],
 }
 
+export const modeNamesByScale: { [key: ScaleType]: string[] } = {
+  'major': ['ionian', 'dorian', 'phrygian', 'lydian', 'mixolydian', 'aeolian', 'locrian'],
+  'minor_mel': ['melodic minor', 'dorian b9', 'lydian augmented', 'lydian dominant', 'mixolydian b6', 'locrian #2', 'altered'],
+  'minor_harm': ['harmonic minor', 'locrian natural 6', 'ionian #5', 'dorian #4', 'phrygian dominant', 'lydian #9', 'ultralocrian']
+}
+
 const symmetryIntervalsByScale: { [key: ScaleType]: number[] } = {
   'diminished_hw': [3, 6, 9],
   'diminished_wh': [3, 6, 9],

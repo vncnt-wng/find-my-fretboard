@@ -1,4 +1,4 @@
-import { CSSProperties, useState } from 'react'
+import { CSSProperties, useEffect, useState } from 'react'
 import { Note, NoteNameToStringMapping } from '../../MusicModel/note'
 import { FretboardNote, stringPositionsContain } from '../../MusicModel/instrument'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,20 +17,58 @@ const stringSpacingStyle: CSSProperties = {
 }
 
 const StringNames = () => {
-  const notes = [...useSelector((state: RootState) => state.fretboardSettings.fretboardMapping.openStrings)].reverse();
+  const [editing, setEditing] = useState<boolean>(false);
+  const openStringNotes = useSelector((state: RootState) => state.fretboardSettings.fretboardMapping.openStrings);
+  const notes = [...openStringNotes].reverse();
+
+  const [editingNotes, setEditingNotes] = useState([...openStringNotes].reverse());
+
+  useEffect(() => {
+    setEditingNotes([...openStringNotes].reverse())
+  }, [openStringNotes])
+
+  const changeEditingNote = (value: string, index: number) => {
+    
+  }
 
   return (
-    <div style={stringSpacingStyle}>
-      {
-        notes.map((note, i) => {
-          return (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
-              <StringName note={note} />
+    <div style={{ position: 'relative', width: '40px'}}>
+      <div style={{position: 'absolute', top: '-40px', width: '100%', textAlign: 'center'}}>
+        <button onClick={() => setEditing(b => !b)}>edit</button>  
+      </div>
+      { editing
+          ? 
+            <div style={{...stringSpacingStyle}}>
+              {
+                editingNotes.map((note, i) => {
+                  return (
+                      <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
+                        <input 
+                          onChange={e => changeEditingNote(e.target.value, i)}
+                          style={{ height: '0.8rem', width: '25px', textAlign: 'center'}}
+                          value={`${NoteNameToStringMapping[note.name]}${note.octave}`}
+                        />
+                      </div>
+                      
+                  )
+                })
+              }
             </div>
-          )
-        })
+          : 
+            <div style={stringSpacingStyle}>
+              {
+                notes.map((note, i) => {
+                  return (
+                    <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
+                      {/* <input value={`${NoteNameToStringMapping[note.name]}${note.octave}`}/> */}
+                      <StringName note={note} />
+                    </div>
+                  )
+                })
+              }
+            </div>
       }
-    </div >
+    </div>
   )
 }
 

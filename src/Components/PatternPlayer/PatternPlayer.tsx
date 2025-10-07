@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../app/store"
 import { NoteName, NoteNameToStringMapping } from "../../MusicModel/note"
-import { ScaleType, scaleTypeToName } from "../../MusicModel/scales"
+import { modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
 import { setChordTone, setPlayerKey, setPlayerPattern, setShowChordTones, setShowScaleName } from "../Slices/playerSlice"
 import { useEffect, useRef } from "react"
 
 const PatternPlayer = () => {
   return (
     <div style={{
+      height: '300px',
       width: '90%', 
       backgroundColor: 'mediumSlateBlue', 
       borderRadius: '10px',
@@ -142,20 +143,31 @@ const KeySelection = () => {
 
 
 const PatternSelection = () => {
-  const pattern = useSelector((state: RootState) => state.playerState.pattern)
+  const {pattern, mode} = useSelector((state: RootState) => state.playerState)
   const dispatch = useDispatch();
 
-  const setPattern = (scaleType: ScaleType) => {
-    dispatch(setPlayerPattern(scaleType))
+  const setPattern = (scaleType: ScaleType, mode: number = 0) => {
+    dispatch(setPlayerPattern({ pattern: scaleType, mode: mode }))
   }
 
   return ( 
-    <div style={sectionStyle}>
+    <div style={{...sectionStyle, overflow: 'scroll', alignItems: 'center', 'height': '100%'}}>
       {
         Object.keys(scaleTypeToName).map(k => 
-          <button style={{backgroundColor: k == pattern ? 'orangeRed': ''}} onClick={() => setPattern(k)}>
-            {scaleTypeToName[k]}
-          </button>
+          <>
+            <button style={{backgroundColor: k == pattern ? 'orangeRed': '', width: '100%'}} onClick={() => setPattern(k)}>
+              {scaleTypeToName[k]}
+            </button>
+            {
+              k in modeNamesByScale 
+                ? modeNamesByScale[k].map((name, i) => 
+                  <button style={{backgroundColor:  k == pattern && i == mode ? 'orangeRed': '', width: '90%'}} onClick={() => setPattern(k, i)}>
+                    {name}
+                  </button>
+                )
+                : <></>
+            }
+          </>
         )  
       }
     </div>
@@ -163,7 +175,7 @@ const PatternSelection = () => {
 }
 
 const Player = () => {
-  const { key, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
+  const { key, modeRoot, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
   
   const dispatch = useDispatch();
 
@@ -203,7 +215,7 @@ const Player = () => {
                     onClick={() => setPlayerChordTone(n)}
                     style={{
                       ...chordButtonStyle,
-                      backgroundColor: key == n
+                      backgroundColor: modeRoot == n
                         ? 'orangeRed'
                         : chordTones.includes(n) 
                           ? 'orchid'
