@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { nextNote, Note, NoteName } from "../../MusicModel/note";
+import { nextNote, Note, NoteName, notesContain } from "../../MusicModel/note";
 import { PatternMarker } from "../Fretboard/FretboardOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { stringPositionsContain } from "../../MusicModel/instrument";
 import { setKeyHeldNote, setKeySingleNote } from "../Slices/notesSlice";
 
 const makeKeys = (startingNote: Note, keys: number): Note[] => {
@@ -17,10 +16,12 @@ const makeKeys = (startingNote: Note, keys: number): Note[] => {
   return result;
 }
 
+// move to state/settings
+export const startingKeyNote = { name: NoteName.C, octave: 2 };
+export const keyNum = 60;
+
 const Keys = () => {
-  const keyNum = 60;
-  const startingNote: Note = { name: NoteName.C, octave: 2 }
-  const keys = makeKeys(startingNote, keyNum);
+  const keys = makeKeys(startingKeyNote, keyNum);
   
   const blackKeys = [
     NoteName.C_SHARP,
@@ -87,11 +88,10 @@ const Key = ({note, blackKey}: {note: Note, blackKey: boolean}) => {
   const dispatch = useDispatch();
   const { hold } = useSelector((state: RootState) => state.fretboardSettings);
   const selectedKeysNotes = useSelector((state: RootState) => state.noteState.selectedKeyNotes)
+  const held = notesContain(note, selectedKeysNotes);
 
-  const held = selectedKeysNotes.includes(note);
 
   const setNote = (e: React.MouseEvent<HTMLDivElement>) => {
-    console.log(note);
     if (hold) {
       dispatch(setKeyHeldNote(note));
     } else {

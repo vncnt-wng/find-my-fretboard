@@ -1,13 +1,16 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../app/store"
-import { NoteName, NoteNameToStringMapping } from "../../MusicModel/note"
+import { NoteName, NoteNameToStringMapping, noteTranspose } from "../../MusicModel/note"
 import { makeScale, modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
 import { setChordTone, setPlayerKey, setPlayerPattern, setShowChordTones, setShowScaleName } from "../Slices/playerSlice"
 import { useEffect, useRef } from "react"
 import { getPatternMapping } from "../../MusicModel/noteToFretboardMapping"
 import { UserPatternPreferences } from "../../MusicModel/pattern"
-import { makePlayoutPattern } from "../../MusicModel/makePlayoutPattern"
-import { playPlayoutPattern } from "../../Audio/play"
+import { makeFretboardPlayoutPattern, makeKeysPlayoutPattern } from "../../MusicModel/makePlayoutPattern"
+import { playFretboardPlayoutPattern, playKeysPlayoutPattern } from "../../Audio/play"
+import { InstrumentType } from "../../MusicModel/instrument"
+import { keyNum, startingKeyNote } from "../Keys/Keys"
+import { clearKeySelectedNotes, clearSelectedNotes } from "../Slices/notesSlice"
 
 const PatternPlayer = () => {
   return (
@@ -193,7 +196,7 @@ const PatternSelection = () => {
 }
 
 const Player = () => {
-  const { fretboardMapping } = useSelector((state: RootState) => state.fretboardSettings);
+  const { fretboardMapping, instrumentType } = useSelector((state: RootState) => state.fretboardSettings);
   const { noteRange } = fretboardMapping; 
   const { key, pattern, mode, modeRoot, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
   
@@ -207,19 +210,38 @@ const Player = () => {
   }
 
   const playPattern = () => {
-    const lowOctave = modeRoot >= noteRange[0].name
+    dispatch(clearKeySelectedNotes());
+    dispatch(clearSelectedNotes());
+
+    if (instrumentType === InstrumentType.FRETBOARD) {
+      const lowOctave = modeRoot >= noteRange[0].name
         ? noteRange[0].octave
         : noteRange[0].octave + 1
     
-    const highOctave = modeRoot <= noteRange[1].name
-        ? noteRange[1].octave
-        : noteRange[1].octave - 1
+      const highOctave = modeRoot <= noteRange[1].name
+          ? noteRange[1].octave
+          : noteRange[1].octave - 1
+      
+      // generate longest possible for now
+      const scale = makeScale(modeRoot, pattern as ScaleType, mode, lowOctave, highOctave - lowOctave)
+      const ctx = { fretboardMapping: fretboardMapping, settings: defaultPrefs }
+      const playoutPattern = makeFretboardPlayoutPattern(scale, ctx);
+      playFretboardPlayoutPattern(playoutPattern);
+    }
+    else {      
+      const lowOctave = modeRoot >= startingKeyNote.name
+        ? startingKeyNote.octave
+        : startingKeyNote.octave + 1
+      const highestNote = noteTranspose(startingKeyNote, keyNum - 1);
+      const highOctave = modeRoot <= highestNote.name
+          ? highestNote.octave
+          : highestNote.octave - 1
+
+      const scale = makeScale(modeRoot, pattern as ScaleType, mode, lowOctave, highOctave - lowOctave)
+      const playoutPattern = makeKeysPlayoutPattern(scale);
+      playKeysPlayoutPattern(playoutPattern);
+    }
     
-    // generate longest possible for now
-    const scale = makeScale(modeRoot, pattern as ScaleType, mode, lowOctave, highOctave - lowOctave)
-    const ctx = { fretboardMapping: fretboardMapping, settings: defaultPrefs }
-    const playoutPattern = makePlayoutPattern(scale, ctx);
-    playPlayoutPattern(playoutPattern);
   }
 
   const toggleShowScaleNotes = () => {
@@ -233,8 +255,6 @@ const Player = () => {
   const setPlayerChordTone = (noteName: NoteName) => {
     dispatch(setChordTone(noteName))
   }
-
-  console.log(chordTones)
 
   return ( 
     <div style={{...sectionStyle, justifyContent: 'start'}}>
