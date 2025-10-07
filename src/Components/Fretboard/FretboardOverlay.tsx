@@ -161,14 +161,14 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
             : 'black'
         // padding:'0.3rem 0' 
       }}/>
-      <PatternMarker note={note} scaleColor="black" position='absolute'/>
+      <PatternMarker note={note} scaleColor="black" position='absolute' size={8}/>
     </div>
       
   )
 }
 
 
-export const PatternMarker = ({note, scaleColor, position}: {note: Note, scaleColor: string, position: string | undefined}) => {
+export const PatternMarker = ({note, scaleColor, position, size}: {note: Note, scaleColor: string, position: string | undefined, size: number}) => {
   const { modeRoot, scaleNames, chordTones, showScaleNames, showChordTones } = useSelector((state: RootState) => state.playerState);
   const root = modeRoot == note.name && showChordTones;
   const chordTone = chordTones.includes(note.name) && showChordTones;
@@ -187,8 +187,8 @@ export const PatternMarker = ({note, scaleColor, position}: {note: Note, scaleCo
           ? 'orchid'
           : scaleColor,
       borderRadius: '100%',
-      height: '8px',
-      width: '8px',
+      height: `${size}px`,
+      width: `${size}px`,
       position: position as 'absolute' | 'relative' | 'fixed' | 'sticky' | 'static',
       left: 0,
       right: 0,

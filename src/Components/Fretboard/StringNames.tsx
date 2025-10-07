@@ -4,6 +4,7 @@ import { FretboardNote, stringPositionsContain } from '../../MusicModel/instrume
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { setHeldNote, setSingleNote } from '../Slices/notesSlice'
+import { PatternMarker } from './FretboardOverlay'
 
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
@@ -60,7 +61,7 @@ const StringNames = () => {
                 notes.map((note, i) => {
                   return (
                     <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
-                      {/* <input value={`${NoteNameToStringMapping[note.name]}${note.octave}`}/> */}
+                      <PatternMarker note={note} scaleColor='black' position='absolute' size={16} />
                       <StringName note={note} />
                     </div>
                   )
@@ -93,7 +94,7 @@ const StringName = ({ note }: {note: Note}) => {
 
   return (
     <span 
-      style={{ height: '1rem', color: hover || isHeld ? 'orangeRed' : 'white' }}
+      style={{ height: '1rem', color: hover || isHeld ? 'orangeRed' : 'white', zIndex:1000 }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={setOpenString}

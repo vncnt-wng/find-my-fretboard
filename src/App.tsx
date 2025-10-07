@@ -5,16 +5,12 @@ import SettingsBar from './Components/SettingsBar';
 import Fretboard from './Components/Fretboard/FretBoard';
 import SelectedNotes from './Components/SelectedNotes';
 import Listeners from './Components/Listeners';
-import { NotePattern, UserPatternPreferences } from './MusicModel/pattern';
-import { NoteName } from './MusicModel/note';
-import { makePlayoutPattern } from './MusicModel/makePlayoutPattern';
-import { playPlayoutPattern } from './Audio/play';
 import PatternPlayer from './Components/PatternPlayer/PatternPlayer';
 import Keys from './Components/Keys/Keys';
 import { InstrumentType } from './MusicModel/instrument';
 
 const pageContainerStyle: CSSProperties = {
-  backgroundColor: '#233040',
+  backgroundColor: '#2f3e51ff',
   width: '100vw',
   maxWidth: '100vw',
   height: '100vh',

@@ -151,7 +151,7 @@ const PatternSelection = () => {
   }
 
   return ( 
-    <div style={{...sectionStyle, overflow: 'scroll', alignItems: 'center', 'height': '100%'}}>
+    <div style={{...sectionStyle, justifyContent: 'start', overflow: 'scroll', alignItems: 'center', 'height': '100%'}}>
       {
         Object.keys(scaleTypeToName).map(k => 
           <>
@@ -195,8 +195,10 @@ const Player = () => {
     dispatch(setChordTone(noteName))
   }
 
+  console.log(chordTones)
+
   return ( 
-    <div style={sectionStyle}>
+    <div style={{...sectionStyle, justifyContent: 'start'}}>
       <button onClick={playPattern}>
         Play
       </button>

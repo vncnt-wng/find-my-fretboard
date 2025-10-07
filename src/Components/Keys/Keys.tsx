@@ -126,6 +126,7 @@ const Key = ({note, blackKey}: {note: Note, blackKey: boolean}) => {
         note={note} 
         scaleColor={blackKey ? 'white' : 'black'} 
         position={undefined}
+        size={8}
       />
     </div>
   )
