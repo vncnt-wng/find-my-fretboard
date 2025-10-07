@@ -96,7 +96,7 @@ const EditingNotes = ({setEditing} : {setEditing: any}) => {
         <button onClick={() => resetToDefault()}>reset to default</button>  
         <button onClick={() => setEditing(false)}>cancel</button>  
       </div>
-      <div style={{...stringSpacingStyle}}>
+      <div style={{...stringSpacingStyle, alignItems: 'start'}}>
         {
           editingNotes.map((note, i) => {
             return (
