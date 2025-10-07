@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { FretboardMapping, initialiseFretboardMapping, Instrument as StringInstrument, InstrumentToStringNumRange, InstrumentType } from '../../MusicModel/instrument';
+import { Note } from '../../MusicModel/note';
 
 
 interface FretboardSettings {
@@ -39,6 +40,14 @@ const changeInstrument = (state: FretboardSettings, action: PayloadAction<String
   setStringInstrument(state, action.payload);
 }
 
+const setCustomTuningReducer = (state: FretboardSettings, action: PayloadAction<Note[]>) => {
+  state.fretboardMapping = initialiseFretboardMapping(state.stringInstrument, state.stringNum, 24, action.payload)
+}
+
+const resetDefaultTuningReducer = (state: FretboardSettings) => {
+  state.fretboardMapping = initialiseFretboardMapping(state.stringInstrument, state.stringNum, 24)
+}
+
 const fretboardSettingsSlice = createSlice({
   name: 'fretboardSettings',
   initialState,
@@ -51,9 +60,19 @@ const fretboardSettingsSlice = createSlice({
       state.fretboardMapping = initialiseFretboardMapping(state.stringInstrument, action.payload, 24);
     },
     setHold: (state, action: PayloadAction<boolean>) => { state.hold = action.payload },
+    setCustomTuning: setCustomTuningReducer,
+    resetDefaultTurning: resetDefaultTuningReducer
     // makeNewMapping: (state, action: PayloadAction<boolean>) => { state.hold = action.payload },
   },
 });
 
-export const { setInstrument, setInstrumentType, setFretSpacing, setStringNum, setHold } = fretboardSettingsSlice.actions;
+export const { 
+  setInstrument, 
+  setInstrumentType, 
+  setFretSpacing, 
+  setStringNum, 
+  setHold, 
+  setCustomTuning,
+  resetDefaultTurning
+} = fretboardSettingsSlice.actions;
 export default fretboardSettingsSlice.reducer;

@@ -1,10 +1,11 @@
 import { CSSProperties, useEffect, useState } from 'react'
-import { Note, NoteNameToStringMapping } from '../../MusicModel/note'
+import { Note, NoteNameToStringMapping, noteString, tryParseNoteString } from '../../MusicModel/note'
 import { FretboardNote, stringPositionsContain } from '../../MusicModel/instrument'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { setHeldNote, setSingleNote } from '../Slices/notesSlice'
 import { PatternMarker } from './FretboardOverlay'
+import { resetDefaultTurning, setCustomTuning } from '../Slices/fretboardSettingsSlice'
 
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
@@ -22,39 +23,14 @@ const StringNames = () => {
   const openStringNotes = useSelector((state: RootState) => state.fretboardSettings.fretboardMapping.openStrings);
   const notes = [...openStringNotes].reverse();
 
-  const [editingNotes, setEditingNotes] = useState([...openStringNotes].reverse());
-
-  useEffect(() => {
-    setEditingNotes([...openStringNotes].reverse())
-  }, [openStringNotes])
-
-  const changeEditingNote = (value: string, index: number) => {
-    
-  }
-
   return (
     <div style={{ position: 'relative', width: '40px'}}>
-      <div style={{position: 'absolute', top: '-40px', width: '100%', textAlign: 'center'}}>
+      <div style={{position: 'absolute', top: '-40px', width: '100px'}}>
         <button onClick={() => setEditing(b => !b)}>edit</button>  
       </div>
       { editing
           ? 
-            <div style={{...stringSpacingStyle}}>
-              {
-                editingNotes.map((note, i) => {
-                  return (
-                      <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
-                        <input 
-                          onChange={e => changeEditingNote(e.target.value, i)}
-                          style={{ height: '0.8rem', width: '25px', textAlign: 'center'}}
-                          value={`${NoteNameToStringMapping[note.name]}${note.octave}`}
-                        />
-                      </div>
-                      
-                  )
-                })
-              }
-            </div>
+            <EditingNotes setEditing={setEditing}/>
           : 
             <div style={stringSpacingStyle}>
               {
@@ -70,6 +46,73 @@ const StringNames = () => {
             </div>
       }
     </div>
+  )
+}
+
+const EditingNotes = ({setEditing} : {setEditing: any}) => {
+  const openStringNotes = useSelector((state: RootState) => state.fretboardSettings.fretboardMapping.openStrings);
+  const [editingNotes, setEditingNotes] = useState(
+    openStringNotes.map(n => noteString(n)).reverse()
+  );
+  const [errorIndicies, setErrorIndicies] = useState<number[]>([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setEditingNotes(openStringNotes.map(n => noteString(n)).reverse())
+  }, [openStringNotes])
+
+  const changeEditingNote = (value: string, index: number) => {
+    const mutNotes = [...editingNotes];
+    mutNotes[index] = value;
+    setEditingNotes(mutNotes);
+  }
+
+
+  const tryParseCustomTuning = () => {
+    const tryParseNotes = [...editingNotes].map(n => tryParseNoteString(n));
+    
+    const errorIndicies = tryParseNotes.reduce<number[]>(
+      (acc, value, index) => (value === null ? [...acc, index] : acc),
+      []
+    );
+
+    if (errorIndicies.length === 0) {
+      dispatch(setCustomTuning((tryParseNotes as Note[]).reverse()))
+      setEditing(false);
+      return;
+    }
+
+    setErrorIndicies(errorIndicies);
+  }
+
+  const resetToDefault = () => {
+    dispatch(resetDefaultTurning())
+  }
+
+  return (
+    <>
+      <div style={{position: 'absolute', top: '-40px', width: '200px'}}>
+        <button onClick={() => tryParseCustomTuning()}>set</button> 
+        <button onClick={() => resetToDefault()}>reset to default</button>  
+        <button onClick={() => setEditing(false)}>cancel</button>  
+      </div>
+      <div style={{...stringSpacingStyle}}>
+        {
+          editingNotes.map((note, i) => {
+            return (
+                <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
+                  <input 
+                    onChange={e => changeEditingNote(e.target.value, i)}
+                    style={{ height: '0.8rem', width: '25px', textAlign: 'center', border: errorIndicies.includes(i) ? 'red solid 1px' : undefined}}
+                    value={note}
+                  />
+                </div>
+                
+            )
+          })
+        }
+      </div>
+    </>
   )
 }
 

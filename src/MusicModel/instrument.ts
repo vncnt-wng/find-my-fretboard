@@ -72,8 +72,8 @@ export interface FretboardMapping {
   stringPosByNote: Map<string, StringPosition[]>
 }
 
-export const initialiseFretboardMapping = (instrument: Instrument, numStrings: number, numFrets: number = 24): FretboardMapping => {
-  const openStrings = getOpenStringNotes(instrument, numStrings);
+export const initialiseFretboardMapping = (instrument: Instrument, numStrings: number, numFrets: number = 24, customTuning: Note[] | null = null): FretboardMapping => {
+  const openStrings = customTuning ?? getOpenStringNotes(instrument, numStrings);
   const stringIndicies = new Map<string, StringPosition[]>();
 
   const indexNotesByString: Note[][] = openStrings

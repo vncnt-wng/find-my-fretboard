@@ -28,6 +28,26 @@ export const NoteNameToStringMapping = {
   [NoteName.B]: 'B',
 }
 
+export const StringToNoteNameMapping: { [key: string]: NoteName } = {
+  ["C"]: NoteName.C,
+  ["C#"]: NoteName.C_SHARP,
+  ["Db"]: NoteName.C_SHARP,
+  ["D"]: NoteName.D,
+  ["D#"]: NoteName.D_SHARP,
+  ["Eb"]: NoteName.D_SHARP,
+  ["E"]: NoteName.E,
+  ["F"]: NoteName.F,
+  ["F#"]: NoteName.F_SHARP,
+  ["Gb"]: NoteName.F_SHARP,
+  ["G"]: NoteName.G,
+  ["G#"]: NoteName.G_SHARP,
+  ["Ab"]: NoteName.G_SHARP,
+  ["A"]: NoteName.A,
+  ["A#"]: NoteName.A_SHARP,
+  ["Bb"]: NoteName.A_SHARP,
+  ["B"]: NoteName.B,
+}
+
 export interface Note {
   name: NoteName;
   octave: number;
@@ -85,4 +105,18 @@ export const noteNameTranspose = (noteName: NoteName, diff: number): NoteName =>
 
 export const notesContain = (note: Note, list: Note[]): boolean => {
   return list.findIndex(n => noteEq(note, n)) != -1;
+}
+
+export const tryParseNoteString = (str: string): Note | null => {
+  const splitIndex = str.charAt(1) == 'b' || str.charAt(1) == '#'
+    ? 2
+    : 1;
+  const nameString = str.substring(0, splitIndex);
+  const octaveIndex = str.substring(splitIndex, str.length);
+
+  if (!(nameString in StringToNoteNameMapping)) return null;
+  const tryParseOctave = parseInt(octaveIndex);
+  if (Number.isNaN(tryParseOctave)) return null;
+
+  return {name: StringToNoteNameMapping[nameString], octave: tryParseOctave}
 }
