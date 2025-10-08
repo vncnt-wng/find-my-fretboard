@@ -1,16 +1,9 @@
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "../../app/store"
-import { NoteName, NoteNameToStringMapping, noteTranspose } from "../../MusicModel/note"
-import { makeScale, modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
-import { setChordTone, setPlayerKey, setPlayerPattern, setShowChordTones, setShowScaleName } from "../Slices/playerSlice"
-import { useEffect, useRef } from "react"
-import { getPatternMapping } from "../../MusicModel/noteToFretboardMapping"
-import { UserPatternPreferences } from "../../MusicModel/pattern"
-import { makeFretboardPlayoutPattern, makeKeysPlayoutPattern } from "../../MusicModel/makePlayoutPattern"
-import { playFretboardPlayoutPattern, playKeysPlayoutPattern } from "../../Audio/play"
-import { InstrumentType } from "../../MusicModel/instrument"
-import { keyNum, startingKeyNote } from "../Keys/Keys"
-import { clearKeySelectedNotes, clearSelectedNotes } from "../Slices/notesSlice"
+import { modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales"
+import { setPlayerPattern } from "../Slices/playerSlice"
+import KeySelection from "./KeySelection"
+import Player from "./Player"
 
 const PatternPlayer = () => {
   return (
@@ -42,12 +35,12 @@ const PatternPlayer = () => {
 const Divider = () => {
   return (
     <div
-      style={{width: '2px', height: '105%', backgroundColor: 'white'}}
+      style={{width: '2px', height: '105%', backgroundColor: 'pink'}}
     />
   )
 }
 
-const sectionStyle: React.CSSProperties = {
+export const sectionStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: 'mediumSlateBlue',
@@ -58,110 +51,11 @@ const sectionStyle: React.CSSProperties = {
   justifyContent: 'center',
 }
 
-const chordButtonStyle: React.CSSProperties = {
+export const chordButtonStyle: React.CSSProperties = {
   width: '35px',
   height: '35px',
   borderRadius: '100%'
 }
-
-
-
-const KeySelection = () => {
-  const { key, symmetryKeys } = useSelector((state: RootState) => state.playerState)
-  const divRef = useRef<HTMLDivElement>(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!divRef.current) {
-      return;
-    }
-
-    const drawCircleFifths = new ResizeObserver(() => {
-      const { width, height } = divRef.current!.getBoundingClientRect();
-      const radius = Math.min(width, height) / 2 - 20;
-      const keyDivs = Array.from(divRef.current!.children) as HTMLElement[];
-      for (var i = 0; i < keyDivs.length; i++)
-      {
-        const current = keyDivs[i];
-        const offset = current.getBoundingClientRect().height / 2;
-        const angle = (- Math.PI / 2) + (2 * Math.PI / keyDivs.length * i);
-        const x = (width / 2) - offset + radius * Math.cos(angle);
-        const y = (height / 2) - offset + radius * Math.sin(angle);
-        current.style.left = `${x.toString()}px`;
-        current.style.top = `${y.toString()}px`;
-        current.style.position = 'absolute'
-      }
-    })
-
-    drawCircleFifths.observe(divRef.current);
-    
-    return () => drawCircleFifths.disconnect();
-  }, [])
-
-  const setKey = (name: NoteName) => {
-    dispatch(setPlayerKey(name))
-  }
-
-  // change this lol 
-  const keyStyle = (name: NoteName) => ({
-    ...chordButtonStyle,
-    backgroundColor: key == name
-      ? 'orangeRed' 
-      : symmetryKeys?.includes(name)
-        ? 'skyBlue'
-        : ''
-  })
-
-  return ( 
-    <div 
-      ref={divRef}
-      style={{
-        ...sectionStyle,
-        alignItems: 'center',
-        position: 'relative'
-      }}
-    >
-      <button style={keyStyle(NoteName.C)} onClick={() => setKey(NoteName.C)}>
-        C
-      </button>
-      <button style={keyStyle(NoteName.G)}onClick={() => setKey(NoteName.G)}>
-        G
-      </button>
-      <button style={keyStyle(NoteName.D)} onClick={() => setKey(NoteName.D)}>
-        D
-      </button>
-      <button style={keyStyle(NoteName.A)} onClick={() => setKey(NoteName.A)}>
-        A
-      </button>
-      <button style={keyStyle(NoteName.E)} onClick={() => setKey(NoteName.E)}>
-        E
-      </button>
-      <button style={keyStyle(NoteName.B)} onClick={() => setKey(NoteName.B)}>
-        B
-      </button>
-      <button style={keyStyle(NoteName.F_SHARP)} onClick={() => setKey(NoteName.F_SHARP)}>
-        F#
-      </button>
-      <button style={keyStyle(NoteName.C_SHARP)}onClick={() => setKey(NoteName.C_SHARP)}>
-        Db
-      </button>
-      <button style={keyStyle(NoteName.G_SHARP)} onClick={() => setKey(NoteName.G_SHARP)}>
-        Ab
-      </button>
-      <button style={keyStyle(NoteName.D_SHARP)} onClick={() => setKey(NoteName.D_SHARP)}>
-        Eb
-      </button>
-      <button style={keyStyle(NoteName.A_SHARP)} onClick={() => setKey(NoteName.A_SHARP)}>
-        Bb
-      </button>
-      <button style={keyStyle(NoteName.F)} onClick={() => setKey(NoteName.F)}>
-        F
-      </button>
-    </div>
-  )
-}
-
-
 
 const PatternSelection = () => {
   const {pattern, mode} = useSelector((state: RootState) => state.playerState)
@@ -190,105 +84,6 @@ const PatternSelection = () => {
             }
           </>
         )  
-      }
-    </div>
-  )
-}
-
-const Player = () => {
-  const { fretboardMapping, instrumentType } = useSelector((state: RootState) => state.fretboardSettings);
-  const { noteRange } = fretboardMapping; 
-  const { key, pattern, mode, modeRoot, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
-  
-  const dispatch = useDispatch();
-
-  const defaultPrefs: UserPatternPreferences = {
-    stretch: 3,
-    skipWeight: 0.9,
-    shiftWeight: 0.7,
-    openStringWeight: 1.0,
-  }
-
-  const playPattern = () => {
-    dispatch(clearKeySelectedNotes());
-    dispatch(clearSelectedNotes());
-
-    if (instrumentType === InstrumentType.FRETBOARD) {
-      const lowOctave = modeRoot >= noteRange[0].name
-        ? noteRange[0].octave
-        : noteRange[0].octave + 1
-    
-      const highOctave = modeRoot <= noteRange[1].name
-          ? noteRange[1].octave
-          : noteRange[1].octave - 1
-      
-      // generate longest possible for now
-      const scale = makeScale(modeRoot, pattern as ScaleType, mode, lowOctave, highOctave - lowOctave)
-      const ctx = { fretboardMapping: fretboardMapping, settings: defaultPrefs }
-      const playoutPattern = makeFretboardPlayoutPattern(scale, ctx);
-      playFretboardPlayoutPattern(playoutPattern);
-    }
-    else {      
-      const lowOctave = modeRoot >= startingKeyNote.name
-        ? startingKeyNote.octave
-        : startingKeyNote.octave + 1
-      const highestNote = noteTranspose(startingKeyNote, keyNum - 1);
-      const highOctave = modeRoot <= highestNote.name
-          ? highestNote.octave
-          : highestNote.octave - 1
-
-      const scale = makeScale(modeRoot, pattern as ScaleType, mode, lowOctave, highOctave - lowOctave)
-      const playoutPattern = makeKeysPlayoutPattern(scale);
-      playKeysPlayoutPattern(playoutPattern);
-    }
-    
-  }
-
-  const toggleShowScaleNotes = () => {
-    dispatch(setShowScaleName(!showScaleNames))
-  }
-
-  const toggleShowChordTones = () => {
-    dispatch(setShowChordTones(!showChordTones))
-  }
-
-  const setPlayerChordTone = (noteName: NoteName) => {
-    dispatch(setChordTone(noteName))
-  }
-
-  return ( 
-    <div style={{...sectionStyle, justifyContent: 'start'}}>
-      <button onClick={playPattern}>
-        Play
-      </button>
-      <button style={{backgroundColor: showScaleNames ? 'orangeRed': ''}} onClick={toggleShowScaleNotes}>
-        Show scale notes
-      </button>
-      <button style={{backgroundColor: showChordTones ? 'orangeRed': ''}} onClick={toggleShowChordTones}>
-        Show chord tones
-      </button>
-      {
-        showChordTones 
-          ? <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px'}}>
-              {
-                scaleNames.map(n => (
-                  <button 
-                    onClick={() => setPlayerChordTone(n)}
-                    style={{
-                      ...chordButtonStyle,
-                      backgroundColor: modeRoot == n
-                        ? 'orangeRed'
-                        : chordTones.includes(n) 
-                          ? 'orchid'
-                          : ''
-                    }}
-                  >
-                    {NoteNameToStringMapping[n]}
-                  </button>
-                ))
-              }
-            </div>
-          : <></> 
       }
     </div>
   )

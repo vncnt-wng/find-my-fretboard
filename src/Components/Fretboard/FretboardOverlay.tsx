@@ -61,7 +61,7 @@ const FretboardOverlay = (): ReactElement => {
           <div
             key={i}
             style={{
-              border: '1px solid grey',
+              border: '1.5px solid grey',
               width: w,
               height: '100%',
               display: 'flex',
@@ -152,7 +152,7 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
       style={{height: '0.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
     >
       <div style={{ 
-        height: isHeld || openStringPlaying ? '2px': '1px', 
+        height: isHeld || openStringPlaying ? '3px': '1px', 
         width: '100%', 
         backgroundColor: hover || isHeld 
           ? 'orangeRed' 

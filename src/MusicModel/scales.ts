@@ -31,7 +31,20 @@ export const scaleTypeToName: { [key: ScaleType]: string }= {
   'wholeTone': 'whole tone'
 }
 
-
+export const intervalShorthandByNumber: { [key: number]: string } = {
+  [0]: 'i',
+  [1]: 'bii',
+  [2]: 'ii',
+  [3]: 'biii',
+  [4]: 'iii',
+  [5]: 'iv',
+  [6]: 'bv',
+  [7]: 'v',
+  [8]: 'bvi',
+  [9]: 'vi',
+  [10]: 'bvii',
+  [11]: 'vii',
+}
 
 const intervalsByScale: { [key: ScaleType]: number[] } = {
   'major': [0, 2, 4, 5, 7, 9, 11],
@@ -59,6 +72,15 @@ const symmetryIntervalsByScale: { [key: ScaleType]: number[] } = {
   'wholeTone': [2, 4, 6, 8, 10],
 }
 
+export const getModeIntervals = (scale: ScaleType, mode: number) => {
+  const intervals = intervalsByScale[scale]
+  const modeIntervals = intervals
+    .slice(mode)
+    .concat(intervals.slice(0, mode).map(i => i + 12))
+    .map(i => i - intervals[mode])
+  return modeIntervals;
+}
+
 export const getScaleNames = (name: NoteName, scale: ScaleType) => {
   return intervalsByScale[scale]
     .map((i => noteNameTranspose(name, i)))
@@ -76,11 +98,7 @@ export const getSymmetryNotes = (name: NoteName, scale: ScaleType) => {
 export const makeScale = (modeRoot: NoteName, scale: ScaleType, mode: number, startOctave: number, octaves: number): NotePattern => {
   const start: Note = {name: modeRoot, octave: startOctave }
   const notes: NotePattern = [];
-  const intervals = intervalsByScale[scale]
-  const modeIntervals = intervals
-    .slice(mode)
-    .concat(intervals.slice(0, mode).map(i => i + 12))
-    .map(i => i - intervals[mode])
+  const modeIntervals = getModeIntervals(scale, mode);
 
   for (var i = 0; i < octaves; i++) {
     for (var j = 0; j < modeIntervals.length; j++) {
