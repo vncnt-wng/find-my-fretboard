@@ -1,11 +1,12 @@
 import { CSSProperties, useEffect, useState } from 'react'
-import { Note, NoteNameToStringMapping, noteString, tryParseNoteString } from '../../MusicModel/note'
-import { FretboardNote, stringPositionsContain } from '../../MusicModel/instrument'
+import { Note, NoteNameToStringMapping, noteString, tryParseNoteString } from '../../../MusicModel/note'
+import { FretboardNote, stringPositionsContain } from '../../../MusicModel/instrument'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../app/store'
-import { setHeldNote, setSingleNote } from '../Slices/notesSlice'
-import { PatternMarker } from './FretboardOverlay'
-import { resetDefaultTurning, setCustomTuning } from '../Slices/fretboardSettingsSlice'
+import { RootState } from '../../../app/store'
+import { setHeldNote, setSingleNote } from '../../Slices/notesSlice'
+import { PatternMarker } from '../PatternMarker'
+import { resetDefaultTurning, setCustomTuning } from '../../Slices/fretboardSettingsSlice'
+import { colours } from '../../styles'
 
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
@@ -137,7 +138,7 @@ const StringName = ({ note }: {note: Note}) => {
 
   return (
     <span 
-      style={{ height: '1rem', color: hover || isHeld ? 'orangeRed' : 'white', zIndex:1000 }}
+      style={{ height: '1rem', color: hover || isHeld ? colours.selected : 'white', zIndex:1000 }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={setOpenString}

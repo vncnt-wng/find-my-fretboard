@@ -4,6 +4,7 @@ import { modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/s
 import { setPlayerPattern } from "../Slices/playerSlice";
 import { ButtonGroup } from "./ButtonGroup";
 import { useState } from "react";
+import { buttonStyle, colours } from "../styles";
 
 export const PatternSelection = () => {
   const [patternType, setPatternType] = useState("scales")
@@ -25,9 +26,8 @@ export const PatternSelection = () => {
             )
           :
             (
-              <div style={{ display: 'flex', flexDirection: 'column', overflow: 'scroll', alignItems: 'center', height: '100%', flex: '1 1 auto', overflowY: 'auto'  }}>
-                <button>maj</button>
-                <button>7</button>
+              <div style={{ display: 'flex', flexDirection: 'column', overflow: 'scroll', height: '100%', flex: '1 1 auto', overflowY: 'auto'  }}>
+                coming soon...
               </div>
             )
       }
@@ -52,11 +52,12 @@ export const Pattern = ({scaleType}: {scaleType: ScaleType}) => {
       <div style={{display: "flex"}}>
         <button 
           style={{
+            ...buttonStyle,
             textAlign: 'left',
             backgroundColor: scaleType == pattern && mode ==0
-              ? 'orangeRed'
+              ? colours.selected
               : scaleType == pattern
-                ? 'dodgerblue'
+                ? colours.relatedMode
                 : '', 
             width: '100%'
           }} 
@@ -69,10 +70,11 @@ export const Pattern = ({scaleType}: {scaleType: ScaleType}) => {
             ?
               <button 
                 style={{
+                  ...buttonStyle,
                   backgroundColor: showModes
-                    ? 'orangeRed'
+                    ? colours.selected
                     : scaleType == pattern && mode != 0
-                      ? 'dodgerblue'
+                      ? colours.relatedMode
                       : ''
                 }}
                 onClick={() => setShowModes(b => !b)}
@@ -88,8 +90,9 @@ export const Pattern = ({scaleType}: {scaleType: ScaleType}) => {
           ? modeNamesByScale[scaleType].map((name, i) => 
             <button 
               style={{
+                ...buttonStyle,
                 textAlign: 'left',
-                backgroundColor:  scaleType == pattern && i == mode ? 'orangeRed': '', 
+                backgroundColor:  scaleType == pattern && i == mode ? colours.selected : '', 
                 width: '95%',
                 marginLeft: 'auto'
               }} 

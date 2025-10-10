@@ -6,10 +6,10 @@ import { InstrumentType } from "../../MusicModel/instrument";
 import { getModeIntervals, intervalShorthandByNumber, makeScale, ScaleType } from "../../MusicModel/scales";
 import { makeFretboardPlayoutPattern, makeKeysPlayoutPattern } from "../../MusicModel/makePlayoutPattern";
 import { playFretboardPlayoutPattern, playKeysPlayoutPattern } from "../../Audio/play";
-import { keyNum, startingKeyNote } from "../Keys/Keys";
+import { keyNum, startingKeyNote } from "../Instruments/Keys/Keys";
 import { Note, NoteName, NoteNameToStringMapping, noteTranspose } from "../../MusicModel/note";
 import { setChordTone, setShowChordTones, setShowScaleName } from "../Slices/playerSlice";
-import { chordButtonStyle, sectionStyle } from "./PatternPlayer";
+import { buttonStyle, chordButtonStyle, colours, sectionStyle } from "./../styles";
 import { useState } from "react";
 import { ButtonGroup } from "./ButtonGroup";
 
@@ -34,10 +34,10 @@ const Player = () => {
   return ( 
     <div style={{...sectionStyle, justifyContent: 'start'}}>
       <PlayPattern />
-      <button style={{backgroundColor: showScaleNames ? 'orangeRed': ''}} onClick={toggleShowScaleNotes}>
+      <button style={{...buttonStyle, backgroundColor: showScaleNames ? colours.selected : ''}} onClick={toggleShowScaleNotes}>
         Show scale notes
       </button>
-      <button style={{backgroundColor: showChordTones ? 'orangeRed': ''}} onClick={toggleShowChordTones}>
+      <button style={{...buttonStyle, backgroundColor: showChordTones ? colours.selected : ''}} onClick={toggleShowChordTones}>
         Show chord tones
       </button>
       {
@@ -51,9 +51,9 @@ const Player = () => {
                       style={{
                         ...chordButtonStyle,
                         backgroundColor: modeRoot == n
-                          ? 'orangeRed'
+                          ? colours.selected
                           : chordTones.includes(n) 
-                            ? 'orchid'
+                            ? colours.chordTone
                             : ''
                       }}
                     >
@@ -172,7 +172,7 @@ const PlayPattern = () => {
         : <></>
       }
       
-      <button onClick={playPattern}>
+      <button style={buttonStyle} onClick={playPattern}>
         Play
       </button>
     </>

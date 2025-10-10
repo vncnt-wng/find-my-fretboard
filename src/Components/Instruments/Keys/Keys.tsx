@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { nextNote, Note, NoteName, notesContain } from "../../MusicModel/note";
-import { PatternMarker } from "../Fretboard/FretboardOverlay";
+import { nextNote, Note, NoteName, notesContain } from "../../../MusicModel/note";
+import { PatternMarker } from "../PatternMarker";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../app/store";
-import { setKeyHeldNote, setKeySingleNote } from "../Slices/notesSlice";
+import { RootState } from "../../../app/store";
+import { setKeyHeldNote, setKeySingleNote } from "../../Slices/notesSlice";
+import { getKeyStyle } from "../../styles";
 
 const makeKeys = (startingNote: Note, keys: number): Note[] => {
   const result = [];
@@ -112,14 +113,7 @@ const Key = ({note, blackKey}: {note: Note, blackKey: boolean}) => {
         justifyContent: 'end',
         paddingBottom: '3px',
         boxSizing: 'border-box',
-        backgroundColor: hover && held
-          ? 'tomato'
-          : hover 
-            ? 'orange'
-            : held 
-              ? 'orangered'
-              : '' 
-   
+        backgroundColor: getKeyStyle(hover, held)
       }}
     >
       <PatternMarker 

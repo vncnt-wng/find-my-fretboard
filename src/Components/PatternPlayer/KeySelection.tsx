@@ -1,9 +1,18 @@
 import { useEffect, useRef } from "react";
 import { NoteName } from "../../MusicModel/note";
 import { setPlayerKey } from "../Slices/playerSlice";
-import { chordButtonStyle, sectionStyle } from "./PatternPlayer";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
+import { colours, raisedBorderStyle, sectionStyle } from "../styles";
+
+
+export const chordButtonStyle: React.CSSProperties = {
+  width: '36px',
+  height: '36px',
+  borderRadius: '100%',
+  borderWidth: '2px',
+  ...raisedBorderStyle
+}
 
 
 const KeySelection = () => {
@@ -46,11 +55,11 @@ const KeySelection = () => {
   const keyStyle = (name: NoteName) => ({
     ...chordButtonStyle,
     backgroundColor: modeRoot == name 
-      ? 'orangeRed' 
+      ? colours.selected
       : key == name 
-        ? 'dodgerblue' 
+        ? colours.relatedMode
         : symmetryKeys?.includes(name)
-          ? 'lightskyBlue'
+          ? colours.relatedSymmetry
           : ''
   })
 

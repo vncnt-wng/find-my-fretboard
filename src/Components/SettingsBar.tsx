@@ -3,6 +3,7 @@ import { RootState } from '../app/store';
 import { setFretSpacing, setStringNum, setHold, setInstrument, setInstrumentType } from './Slices/fretboardSettingsSlice';
 import { Instrument, InstrumentToStringNumRange, InstrumentType } from '../MusicModel/instrument';
 import { clearKeySelectedNotes, clearSelectedNotes } from './Slices/notesSlice';
+import { colours } from './styles';
 
 const settingStyle = {
   display: 'flex',
@@ -28,7 +29,7 @@ const SettingsBar = () => {
   return (
     <>
       <div style={{height: '5rem'}}></div>
-      <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: 'slateblue' }}>
+      <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: colours.panel }}>
         <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
           <div style={{ fontSize: '1.5rem', width: '100%' }}>
             find my 

@@ -2,11 +2,11 @@ import { CSSProperties } from 'react'
 import { Provider, useSelector } from 'react-redux';
 import { RootState, store } from './app/store';
 import SettingsBar from './Components/SettingsBar';
-import Fretboard from './Components/Fretboard/FretBoard';
+import Fretboard from './Components/Instruments/Fretboard/FretBoard';
 import SelectedNotes from './Components/SelectedNotes';
 import Listeners from './Components/Listeners';
 import PatternPlayer from './Components/PatternPlayer/PatternPlayer';
-import Keys from './Components/Keys/Keys';
+import Keys from './Components/Instruments/Keys/Keys';
 import { InstrumentType } from './MusicModel/instrument';
 
 const pageContainerStyle: CSSProperties = {
