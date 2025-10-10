@@ -4,6 +4,7 @@ import { modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/s
 import { setPlayerPattern } from "../Slices/playerSlice"
 import KeySelection from "./KeySelection"
 import Player from "./Player"
+import { PatternSelection } from "./PatternSelection"
 
 const PatternPlayer = () => {
   return (
@@ -57,36 +58,5 @@ export const chordButtonStyle: React.CSSProperties = {
   borderRadius: '100%'
 }
 
-const PatternSelection = () => {
-  const {pattern, mode} = useSelector((state: RootState) => state.playerState)
-  const dispatch = useDispatch();
-
-  const setPattern = (scaleType: ScaleType, mode: number = 0) => {
-    dispatch(setPlayerPattern({ pattern: scaleType, mode: mode }))
-  }
-
-  return ( 
-    <div style={{...sectionStyle, justifyContent: 'start', overflow: 'scroll', alignItems: 'center', 'height': '100%'}}>
-      {
-        Object.keys(scaleTypeToName).map(k => 
-          <>
-            <button style={{backgroundColor: k == pattern ? 'orangeRed': '', width: '100%'}} onClick={() => setPattern(k)}>
-              {scaleTypeToName[k]}
-            </button>
-            {
-              k in modeNamesByScale 
-                ? modeNamesByScale[k].map((name, i) => 
-                  <button style={{backgroundColor:  k == pattern && i == mode ? 'orangeRed': '', width: '90%'}} onClick={() => setPattern(k, i)}>
-                    {name}
-                  </button>
-                )
-                : <></>
-            }
-          </>
-        )  
-      }
-    </div>
-  )
-}
 
 export default PatternPlayer;

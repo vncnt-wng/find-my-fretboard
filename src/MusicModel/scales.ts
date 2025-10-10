@@ -21,9 +21,9 @@ export type ScaleType =
 
 export const scaleTypeToName: { [key: ScaleType]: string }= {
   'major': 'major',
-  '6th_dim': '6th diminished', 
   'minor_mel': 'melodic minor', 
   'minor_harm': 'harmonic minor', 
+  '6th_dim': '6th diminished', 
   '6th_dim_minor': 'minor 6th diminished',  
   'diminished_hw': 'half-whole diminished', 
   'diminished_wh': 'whole-half diminished', 

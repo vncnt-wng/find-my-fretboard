@@ -11,6 +11,7 @@ import { Note, NoteName, NoteNameToStringMapping, noteTranspose } from "../../Mu
 import { setChordTone, setShowChordTones, setShowScaleName } from "../Slices/playerSlice";
 import { chordButtonStyle, sectionStyle } from "./PatternPlayer";
 import { useState } from "react";
+import { ButtonGroup } from "./ButtonGroup";
 
 const Player = () => {
   const { modeRoot, mode, pattern, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
@@ -162,11 +163,11 @@ const PlayPattern = () => {
 
   return (
     <>
-      <ButtonGroup selected={patternMode} setSelected={(s) => setPatternMode(s)} values={['normal','arpegiated','chord']}/>
+      mode<ButtonGroup selected={patternMode} setSelected={(s) => setPatternMode(s)} values={['normal','arpegiated','chord']}/>
       { patternMode != "normal"
         ? <>
-            <ButtonGroup selected={interval} setSelected={(s) => setInterval(s)} values={['thirds','fourths','fifths', 'sixths']}/>
-            <ButtonGroup selected={numVoices} setSelected={(s) => setNumVoices(s)} values={['2','3','4']}/>
+            interval<ButtonGroup selected={interval} setSelected={(s) => setInterval(s)} values={['thirds','fourths','fifths', 'sixths']}/>
+            voices<ButtonGroup selected={numVoices} setSelected={(s) => setNumVoices(s)} values={['2','3','4']}/>
           </>
         : <></>
       }
@@ -178,12 +179,5 @@ const PlayPattern = () => {
   )
 }
 
-const ButtonGroup = ({selected, setSelected, values}: {selected: string, setSelected: (s: string) => void, values: string[]}) => {
-  return (
-    <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-    {values.map(v => <button style={{backgroundColor: v === selected ? 'orangeRed': ''}} onClick={_ => setSelected(v)}>{v}</button>)}
-    </div>
-  )
-}
 
 export default Player;

@@ -7,7 +7,7 @@ import { RootState } from "../../app/store";
 
 
 const KeySelection = () => {
-  const { key, symmetryKeys } = useSelector((state: RootState) => state.playerState)
+  const { key, modeRoot, symmetryKeys } = useSelector((state: RootState) => state.playerState)
   const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
 
@@ -45,11 +45,13 @@ const KeySelection = () => {
   // change this lol 
   const keyStyle = (name: NoteName) => ({
     ...chordButtonStyle,
-    backgroundColor: key == name
+    backgroundColor: modeRoot == name 
       ? 'orangeRed' 
-      : symmetryKeys?.includes(name)
-        ? 'skyBlue'
-        : ''
+      : key == name 
+        ? 'dodgerblue' 
+        : symmetryKeys?.includes(name)
+          ? 'lightskyBlue'
+          : ''
   })
 
   return ( 
