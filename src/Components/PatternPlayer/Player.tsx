@@ -9,7 +9,7 @@ import { playFretboardPlayoutPattern, playKeysPlayoutPattern } from "../../Audio
 import { keyNum, startingKeyNote } from "../Instruments/Keys/Keys";
 import { Note, NoteName, NoteNameToStringMapping, noteTranspose } from "../../MusicModel/note";
 import { setChordTone, setShowChordTones, setShowScaleName } from "../Slices/playerSlice";
-import { buttonStyle, chordButtonStyle, colours, sectionStyle } from "./../styles";
+import { sectionStyle } from "./../styles";
 import { useState } from "react";
 import { ButtonGroup } from "../Buttons/ButtonGroup";
 import StyledButton from "../Buttons/Button";
@@ -56,6 +56,7 @@ const Player = () => {
                       text={NoteNameToStringMapping[n]}
                       onClick={() => setPlayerChordTone(n)}
                       selected={modeRoot == n}
+                      chordTone={chordTones.includes(n)}
                     />
                     <span style={{fontSize: '0.8rem'}}>{intervalShorthandByNumber[modeIntervals[i]]}</span>
                   </div>
@@ -173,7 +174,6 @@ const PlayPattern = () => {
       <StyledButton 
         text={'play'}
         selected={false}
-        extraStyles={buttonStyle} 
         onClick={playPattern} 
       />
     </>

@@ -13,7 +13,7 @@ export const colours = {
 
   // page styles
   panel: 'slateBlue',
-  outline: 'lightslateblue',
+  outline: 'lightsteelblue',
   buttonBackground: 'mediumslateblue'
 }
 
@@ -50,10 +50,11 @@ export const chordButtonStyle: React.CSSProperties = {
 export const boxStyle: React.CSSProperties = {
   verticalAlign: 'bottom', 
   color: 'white', 
-  border: 'solid 1px lightslateblue !important',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: colours.outline,
   borderRadius: '5px',
-  outline: 'none',
-  backgroundColor: 'mediumslateblue'
+  backgroundColor: colours.buttonBackground
 }
 
 export const getButtonColour = (selected: boolean, alternate?: boolean, alternate2?: boolean): string => {
@@ -63,10 +64,5 @@ export const getButtonColour = (selected: boolean, alternate?: boolean, alternat
       ? colours.relatedMode
       : alternate2
         ? colours.relatedSymmetry
-        : 'mediumslateblue';
-}
-
-export const buttonStyle: React.CSSProperties = {
-  borderRadius: '3px',
-  ...boxStyle
+        : colours.buttonBackground
 }

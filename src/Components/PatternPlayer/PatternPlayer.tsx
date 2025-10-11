@@ -31,7 +31,7 @@ const PatternPlayer = () => {
 const Divider = () => {
   return (
     <div
-      style={{width: '2px', height: '105%', backgroundColor: 'pink'}}
+      style={{width: '2px', height: '105%', backgroundColor: colours.outline}}
     />
   )
 }

@@ -1,4 +1,4 @@
-import { buttonStyle, getButtonColour } from "../styles"
+import { boxStyle, getButtonColour } from "../styles"
 
 export interface StyledButtonProps {
   text: string,
@@ -13,7 +13,7 @@ const StyledButton = ({text, selected, alternate, alternate2, onClick, extraStyl
   return (
     <button 
       style={{
-        ...buttonStyle,
+        ...boxStyle,
         backgroundColor: getButtonColour(selected, alternate, alternate2),
         ...(extraStyles ?? {})
       }} 
