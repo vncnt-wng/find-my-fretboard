@@ -3,21 +3,12 @@ import { RootState } from '../app/store';
 import { setFretSpacing, setStringNum, setHold, setInstrument, setInstrumentType } from './Slices/fretboardSettingsSlice';
 import { Instrument, InstrumentToStringNumRange, InstrumentType } from '../MusicModel/instrument';
 import { clearKeySelectedNotes, clearSelectedNotes } from './Slices/notesSlice';
-import { colours } from './styles';
+import { boxStyle, colours } from './styles';
 
 const settingStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: '5px'
-}
-
-const boxStyle = {
-  verticalAlign: 'bottom', 
-  color: 'white', 
-  backgroundColor: 'transparent',
-  border: 'solid 1px lightsteelblue',
-  borderRadius: '5px',
-  outline: 'none'
 }
 
 const checkboxStyle = {
@@ -42,8 +33,8 @@ const SettingsBar = () => {
       <div style={{height: '5rem'}}></div>
       <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: colours.panel }}>
         <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
-          <div style={{ fontSize: '1.5rem', width: '100%', display: 'flex',  alignItems: 'end', height: '2rem', gap: '5px'}}>
-            <span style={{height: '2rem', paddingTop: '1px'}}>find my </span>
+          <div style={{ fontSize: '1.5rem', width: '100%', display: 'flex',  alignItems: 'center', height: '2rem', gap: '5px'}}>
+            <span style={{height: '2rem', paddingTop: '1.5px'}}>find my </span>
             <select 
               style={{ 
                 height: '2rem', 
@@ -58,7 +49,7 @@ const SettingsBar = () => {
               {/* <optgroup style={{fontSize: '1.5rem'}}> */}
                 <option value={InstrumentType.FRETBOARD}>fretboard</option>
                 <option value={InstrumentType.KEYS}>keys</option>
-                <option value={InstrumentType.KEYS}>chords</option>
+                <option value={InstrumentType.CHORDS}>chords</option>
               {/* </optgroup> */}
             </select>
           </div>

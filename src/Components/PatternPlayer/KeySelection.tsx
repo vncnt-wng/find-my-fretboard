@@ -3,17 +3,8 @@ import { NoteName } from "../../MusicModel/note";
 import { setPlayerKey } from "../Slices/playerSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
-import { colours, raisedBorderStyle, sectionStyle } from "../styles";
-
-
-export const chordButtonStyle: React.CSSProperties = {
-  width: '36px',
-  height: '36px',
-  borderRadius: '100%',
-  borderWidth: '2px',
-  ...raisedBorderStyle
-}
-
+import { sectionStyle } from "../styles";
+import ChordButton from "../Buttons/ChordButton";
 
 const KeySelection = () => {
   const { key, modeRoot, symmetryKeys } = useSelector((state: RootState) => state.playerState)
@@ -51,17 +42,35 @@ const KeySelection = () => {
     dispatch(setPlayerKey(name))
   }
 
-  // change this lol 
-  const keyStyle = (name: NoteName) => ({
-    ...chordButtonStyle,
-    backgroundColor: modeRoot == name 
-      ? colours.selected
-      : key == name 
-        ? colours.relatedMode
-        : symmetryKeys?.includes(name)
-          ? colours.relatedSymmetry
-          : ''
-  })
+  const circleOfFifths = [
+    NoteName.C,
+    NoteName.G,
+    NoteName.D,
+    NoteName.A,
+    NoteName.E,
+    NoteName.B,
+    NoteName.F_SHARP,
+    NoteName.C_SHARP,
+    NoteName.G_SHARP,
+    NoteName.D_SHARP,
+    NoteName.A_SHARP,
+    NoteName.F,
+  ];
+
+  const circleOfFifthsNames = [
+    'C',
+    'G',
+    'D',
+    'A',
+    'E',
+    'B',
+    'F#',
+    'Db',
+    'Ab',
+    'Eb',
+    'Bb',
+    'F',
+  ]
 
   return ( 
     <div 
@@ -72,42 +81,18 @@ const KeySelection = () => {
         position: 'relative'
       }}
     >
-      <button style={keyStyle(NoteName.C)} onClick={() => setKey(NoteName.C)}>
-        C
-      </button>
-      <button style={keyStyle(NoteName.G)}onClick={() => setKey(NoteName.G)}>
-        G
-      </button>
-      <button style={keyStyle(NoteName.D)} onClick={() => setKey(NoteName.D)}>
-        D
-      </button>
-      <button style={keyStyle(NoteName.A)} onClick={() => setKey(NoteName.A)}>
-        A
-      </button>
-      <button style={keyStyle(NoteName.E)} onClick={() => setKey(NoteName.E)}>
-        E
-      </button>
-      <button style={keyStyle(NoteName.B)} onClick={() => setKey(NoteName.B)}>
-        B
-      </button>
-      <button style={keyStyle(NoteName.F_SHARP)} onClick={() => setKey(NoteName.F_SHARP)}>
-        F#
-      </button>
-      <button style={keyStyle(NoteName.C_SHARP)}onClick={() => setKey(NoteName.C_SHARP)}>
-        Db
-      </button>
-      <button style={keyStyle(NoteName.G_SHARP)} onClick={() => setKey(NoteName.G_SHARP)}>
-        Ab
-      </button>
-      <button style={keyStyle(NoteName.D_SHARP)} onClick={() => setKey(NoteName.D_SHARP)}>
-        Eb
-      </button>
-      <button style={keyStyle(NoteName.A_SHARP)} onClick={() => setKey(NoteName.A_SHARP)}>
-        Bb
-      </button>
-      <button style={keyStyle(NoteName.F)} onClick={() => setKey(NoteName.F)}>
-        F
-      </button>
+      {
+        circleOfFifths.map((noteName, i) => 
+          <ChordButton
+            text={circleOfFifthsNames[i]}
+            onClick={() => setKey(noteName)}
+            selected={modeRoot == noteName}
+            alternate={key == noteName}
+            alternate2={symmetryKeys?.includes(noteName)}
+          />
+        )
+      }
+      
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import KeySelection from "./KeySelection"
 import Player from "./Player"
 import { PatternSelection } from "./PatternSelection"
-import { colours, raisedBorderStyle } from "../styles"
+import { colours } from "../styles"
 
 const PatternPlayer = () => {
   return (
@@ -16,8 +16,8 @@ const PatternPlayer = () => {
       alignItems: 'center',
       padding: '20px',
       gap: '20px',
-      ...raisedBorderStyle,
-      borderWidth: '4px'
+      border: 'solid ' + colours.outline,
+      borderWidth: '4px',
     }}>
       <PatternSelection />
       <Divider />

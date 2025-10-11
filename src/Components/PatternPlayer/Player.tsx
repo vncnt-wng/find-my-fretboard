@@ -11,7 +11,9 @@ import { Note, NoteName, NoteNameToStringMapping, noteTranspose } from "../../Mu
 import { setChordTone, setShowChordTones, setShowScaleName } from "../Slices/playerSlice";
 import { buttonStyle, chordButtonStyle, colours, sectionStyle } from "./../styles";
 import { useState } from "react";
-import { ButtonGroup } from "./ButtonGroup";
+import { ButtonGroup } from "../Buttons/ButtonGroup";
+import StyledButton from "../Buttons/Button";
+import ChordButton from "../Buttons/ChordButton";
 
 const Player = () => {
   const { modeRoot, mode, pattern, scaleNames, chordTones, showScaleNames, showChordTones} = useSelector((state: RootState) => state.playerState);
@@ -34,31 +36,27 @@ const Player = () => {
   return ( 
     <div style={{...sectionStyle, justifyContent: 'start'}}>
       <PlayPattern />
-      <button style={{...buttonStyle, backgroundColor: showScaleNames ? colours.selected : ''}} onClick={toggleShowScaleNotes}>
-        Show scale notes
-      </button>
-      <button style={{...buttonStyle, backgroundColor: showChordTones ? colours.selected : ''}} onClick={toggleShowChordTones}>
-        Show chord tones
-      </button>
+      <StyledButton 
+        text={'show scale notes'}
+        selected={showScaleNames}
+        onClick={toggleShowScaleNotes}
+      />
+      <StyledButton 
+        text={'show chord notes'}
+        selected={showChordTones}
+        onClick={toggleShowChordTones}
+      />
       {
         showChordTones 
           ? <div style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px'}}>
               {
                 scaleNames.map((n, i) => (
                   <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px'}}>
-                    <button 
+                    <ChordButton 
+                      text={NoteNameToStringMapping[n]}
                       onClick={() => setPlayerChordTone(n)}
-                      style={{
-                        ...chordButtonStyle,
-                        backgroundColor: modeRoot == n
-                          ? colours.selected
-                          : chordTones.includes(n) 
-                            ? colours.chordTone
-                            : ''
-                      }}
-                    >
-                      {NoteNameToStringMapping[n]}
-                    </button>
+                      selected={modeRoot == n}
+                    />
                     <span style={{fontSize: '0.8rem'}}>{intervalShorthandByNumber[modeIntervals[i]]}</span>
                   </div>
                 ))
@@ -172,9 +170,12 @@ const PlayPattern = () => {
         : <></>
       }
       
-      <button style={buttonStyle} onClick={playPattern}>
-        Play
-      </button>
+      <StyledButton 
+        text={'play'}
+        selected={false}
+        extraStyles={buttonStyle} 
+        onClick={playPattern} 
+      />
     </>
   )
 }

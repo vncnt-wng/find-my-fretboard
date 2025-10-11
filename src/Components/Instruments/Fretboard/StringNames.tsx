@@ -26,25 +26,27 @@ const StringNames = () => {
 
   return (
     <div style={{ position: 'relative', width: '40px'}}>
-      <div style={{position: 'absolute', top: '-40px', width: '100px'}}>
-        <button onClick={() => setEditing(b => !b)}>edit</button>  
-      </div>
       { editing
           ? 
             <EditingNotes setEditing={setEditing}/>
           : 
-            <div style={stringSpacingStyle}>
-              {
-                notes.map((note, i) => {
-                  return (
-                    <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
-                      <PatternMarker note={note} scaleColor='black' position='absolute' size={16} />
-                      <StringName note={note} />
-                    </div>
-                  )
-                })
-              }
-            </div>
+            <>
+              <div style={{position: 'absolute', top: '-40px', width: '100px'}}>
+                <button onClick={() => setEditing(b => !b)}>edit</button>  
+              </div>
+              <div style={stringSpacingStyle}>
+                {
+                  notes.map((note, i) => {
+                    return (
+                      <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
+                        <PatternMarker note={note} scaleColor='black' position='absolute' size={16} />
+                        <StringName note={note} />
+                      </div>
+                    )
+                  })
+                }
+              </div>
+            </>
       }
     </div>
   )

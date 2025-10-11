@@ -2,10 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { modeNamesByScale, ScaleType, scaleTypeToName } from "../../MusicModel/scales";
 import { setPlayerPattern } from "../Slices/playerSlice";
-import { ButtonGroup } from "./ButtonGroup";
+import { ButtonGroup } from "../Buttons/ButtonGroup";
 import { useState } from "react";
-import { buttonStyle, colours } from "../styles";
 import { PlayerType, playerTypes, setPlayerType } from "../Slices/playerTypeSlice";
+import StyledButton from "../Buttons/Button";
 
 const scrollSelection: React.CSSProperties = { 
   display: 'flex', 
@@ -13,11 +13,12 @@ const scrollSelection: React.CSSProperties = {
   overflow: 'scroll', 
   height: '100%', 
   flex: '1 1 auto', 
-  overflowY: 'auto'  
+  overflowY: 'auto',
+  gap: '2px',
 }
 
 const selectButtonStyle: React.CSSProperties = {
-  ...buttonStyle,
+  // ...buttonStyle,
   textAlign: 'left',
   width: '100%',
 }
@@ -75,36 +76,31 @@ export const Pattern = ({scaleType}: {scaleType: ScaleType}) => {
 
   return (
     <>
-      <div style={{display: "flex"}}>
-        <button 
-          style={{
-            ...selectButtonStyle,
-            backgroundColor: scaleType == pattern && mode ==0
-              ? colours.selected
-              : scaleType == pattern
-                ? colours.relatedMode
-                : '', 
-          }} 
+      <div style={{display: "flex", position: 'relative'}}>
+        <StyledButton
+          text={scaleTypeToName[scaleType]}
+          selected={scaleType == pattern && mode ==0}
+          alternate={scaleType == pattern}
           onClick={() => setPattern(scaleType)}
-        >
-          {scaleTypeToName[scaleType]}
-        </button>
+          extraStyles={{
+            ...selectButtonStyle,
+            ...(scaleType in modeNamesByScale ? { borderTopRightRadius: 0, borderBottomRightRadius: 0} : {})
+          }}
+        />
         {
           scaleType in modeNamesByScale 
             ?
-              <button 
-                style={{
-                  ...buttonStyle,
-                  backgroundColor: showModes
-                    ? colours.selected
-                    : scaleType == pattern && mode != 0
-                      ? colours.relatedMode
-                      : ''
-                }}
+              <StyledButton
+                text={'modes'}
+                selected={showModes}
+                alternate={scaleType == pattern && mode != 0}
                 onClick={() => setShowModes(b => !b)}
-              >
-                modes
-              </button>
+                extraStyles={{ 
+                  borderTopLeftRadius: 0, 
+                  borderBottomLeftRadius: 0,
+                  borderLeft: 0
+                }}
+              />
             : <></>
         }
         
@@ -112,18 +108,16 @@ export const Pattern = ({scaleType}: {scaleType: ScaleType}) => {
       {
         scaleType in modeNamesByScale && showModes
           ? modeNamesByScale[scaleType].map((name, i) => 
-            <button 
-              style={{
-                ...buttonStyle,
-                textAlign: 'left',
-                backgroundColor:  scaleType == pattern && i == mode ? colours.selected : '', 
-                width: '95%',
-                marginLeft: 'auto'
-              }} 
+            <StyledButton
+              text={name}
+              selected={scaleType == pattern && i == mode}
               onClick={() => setPattern(scaleType, i)}
-            >
-              {name}
-            </button>
+              extraStyles={{ 
+                width: '95%',
+                marginLeft: 'auto',
+                textAlign: 'left'
+              }}
+            />
           )
           : <></>
       }

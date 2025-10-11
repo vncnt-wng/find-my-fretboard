@@ -12,7 +12,9 @@ export const colours = {
   held: 'orangeRed',
 
   // page styles
-  panel: 'slateBlue'
+  panel: 'slateBlue',
+  outline: 'lightslateblue',
+  buttonBackground: 'mediumslateblue'
 }
 
 export const getKeyStyle = (hover: boolean, held: boolean, defaultColour: string = ''): string => {
@@ -25,13 +27,6 @@ export const getKeyStyle = (hover: boolean, held: boolean, defaultColour: string
         : defaultColour
 }
 
-
-export const raisedBorderStyle: React.CSSProperties = {
-  borderTop: 'solid lightslategrey',
-  borderLeft: 'solid lightslategray',
-  borderRight: 'solid darkslategrey',
-  borderBottom: 'solid darkslategray'
-}
 
 export const sectionStyle: React.CSSProperties = {
   display: 'flex',
@@ -47,12 +42,31 @@ export const chordButtonStyle: React.CSSProperties = {
   width: '36px',
   height: '36px',
   borderRadius: '100%',
-  borderWidth: '2px',
-  ...raisedBorderStyle
+  // borderWidth: '2px',
+  // ...raisedBorderStyle
+}
+
+
+export const boxStyle: React.CSSProperties = {
+  verticalAlign: 'bottom', 
+  color: 'white', 
+  border: 'solid 1px lightslateblue !important',
+  borderRadius: '5px',
+  outline: 'none',
+  backgroundColor: 'mediumslateblue'
+}
+
+export const getButtonColour = (selected: boolean, alternate?: boolean, alternate2?: boolean): string => {
+  return selected
+    ? colours.selected
+    : alternate
+      ? colours.relatedMode
+      : alternate2
+        ? colours.relatedSymmetry
+        : 'mediumslateblue';
 }
 
 export const buttonStyle: React.CSSProperties = {
   borderRadius: '3px',
-  borderWidth: '1px',
-  ...raisedBorderStyle,
+  ...boxStyle
 }

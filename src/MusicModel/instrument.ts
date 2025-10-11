@@ -127,7 +127,8 @@ export enum Instrument {
 
 export enum InstrumentType {
   FRETBOARD = 0,
-  KEYS = 1
+  KEYS = 1,
+  CHORDS = 2
 }
 
 export const InstrumentToStringNumRange = {

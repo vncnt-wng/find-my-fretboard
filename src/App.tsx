@@ -50,15 +50,17 @@ const App = () => {
 
 const Instrument = () => {
   const instrumentType = useSelector((state: RootState) => state.fretboardSettings.instrumentType);
-  
+  console.log(instrumentType)
   return (
     <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%', height: '120px'}}>
       {
           instrumentType == InstrumentType.FRETBOARD
             ? <Fretboard />
-            : InstrumentType.KEYS 
+            : instrumentType == InstrumentType.KEYS 
               ? <Keys />
-              : <></>
+              : instrumentType == InstrumentType.CHORDS
+                ? <>coming soon...</>
+                : <></>
       }
     </div>
   )
