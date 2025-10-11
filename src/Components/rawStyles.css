@@ -1,0 +1,14 @@
+.pressable {
+    background-color: #4f46e5; /* normal */
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.pressable:active {
+    background-color: #312e81; /* while pressed */
+    transform: scale(0.97);
+}

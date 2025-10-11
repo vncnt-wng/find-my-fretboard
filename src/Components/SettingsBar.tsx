@@ -11,12 +11,23 @@ const settingStyle = {
   gap: '5px'
 }
 
+const boxStyle = {
+  verticalAlign: 'bottom', 
+  color: 'white', 
+  backgroundColor: 'transparent',
+  border: 'solid 1px lightsteelblue',
+  borderRadius: '5px',
+  outline: 'none'
+}
+
 const checkboxStyle = {
+  ...boxStyle,
   margin: '0 0 0 1px'
 }
 
+
 const SettingsBar = () => {
-  const { constFretSpacing, hold, instrumentType } = useSelector((state: RootState) => state.fretboardSettings);
+  const { hold, instrumentType } = useSelector((state: RootState) => state.fretboardSettings);
   const dispatch = useDispatch();
 
   const handleSetInstrumentType = (instrumentType: InstrumentType) => {
@@ -31,9 +42,14 @@ const SettingsBar = () => {
       <div style={{height: '5rem'}}></div>
       <div style={{ width: '100%', height: '5rem', position: 'fixed', top: 0, backgroundColor: colours.panel }}>
         <div style={{ display: 'flex', height: '100%', justifyContent: 'spaceBetween', alignItems: 'center', padding: '0 2rem' }}>
-          <div style={{ fontSize: '1.5rem', width: '100%' }}>
-            find my 
+          <div style={{ fontSize: '1.5rem', width: '100%', display: 'flex',  alignItems: 'end', height: '2rem', gap: '5px'}}>
+            <span style={{height: '2rem', paddingTop: '1px'}}>find my </span>
             <select 
+              style={{ 
+                height: '2rem', 
+                fontSize: '1.4rem',
+                ...boxStyle
+              }}
               value={instrumentType}
               onChange={e => {
                 handleSetInstrumentType(Number(e.target.value))
@@ -42,20 +58,16 @@ const SettingsBar = () => {
               {/* <optgroup style={{fontSize: '1.5rem'}}> */}
                 <option value={InstrumentType.FRETBOARD}>fretboard</option>
                 <option value={InstrumentType.KEYS}>keys</option>
+                <option value={InstrumentType.KEYS}>chords</option>
               {/* </optgroup> */}
             </select>
           </div>
           <div style={{fontSize: '1rem', flexWrap: 'nowrap', width: '100%', height: '100%', display: 'flex', justifyContent: 'end', flexDirection: 'row', alignItems: 'center', gap: '2rem'}}>
-            <div style={settingStyle}>
-                constant width frets: 
-                <input 
-                  style={checkboxStyle}
-                  checked={constFretSpacing} 
-                  onChange={e => dispatch(setFretSpacing(e.target.checked))} 
-                  type="checkbox"
-                />
-            </div>
-            <StringAndInstrumentSelection />
+            {
+              instrumentType == InstrumentType.FRETBOARD
+                ? <StringInstrumentSettings />
+                : <></>
+            }
             <div style={settingStyle}>
               hold notes: 
               <input
@@ -79,15 +91,24 @@ const SettingsBar = () => {
   )
 }
 
-const StringAndInstrumentSelection = () => {
-  const { stringInstrument: instrument, stringNum } = useSelector((state: RootState) => state.fretboardSettings);
+const StringInstrumentSettings = () => {
+  const { stringInstrument: instrument, stringNum, constFretSpacing } = useSelector((state: RootState) => state.fretboardSettings);
   const stringRange = InstrumentToStringNumRange[instrument];
   const dispatch = useDispatch();
   
   return (
     <>
+     <div style={settingStyle}>
+          constant width frets: 
+          <input 
+            style={checkboxStyle}
+            checked={constFretSpacing} 
+            onChange={e => dispatch(setFretSpacing(e.target.checked))} 
+            type="checkbox"
+          />
+      </div>
       <div style={settingStyle}>
-        Instrument:
+        instrument:
         <select
           value={instrument}
           name="numStrings"
@@ -102,7 +123,7 @@ const StringAndInstrumentSelection = () => {
         </select>
       </div>
       <div style={settingStyle}>
-        Number of strings: 
+        number of strings: 
         <select 
           value={stringNum} 
           onChange={e => dispatch(setStringNum(Number(e.target.value)))} 

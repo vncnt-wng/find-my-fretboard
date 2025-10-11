@@ -103,7 +103,7 @@ const stringSpacingStyle: CSSProperties = {
   height: '100%',
   flexDirection: 'column',
   justifyContent: 'space-between',
-  padding: '0.4rem 0',
+  padding: '3px 0',
   background: 'transparent',
   boxSizing: 'border-box'
 }
@@ -151,7 +151,7 @@ const StringSegment =  ({ note, stringIndex, fret }: { note: Note, stringIndex: 
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onClick={setNote}
-      style={{height: '0.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
+      style={{height: '12px', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}
     >
       <div style={{ 
         height: isHeld || openStringPlaying ? '3px' : hover ? '2px' : '1px', 

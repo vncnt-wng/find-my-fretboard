@@ -17,7 +17,7 @@ const PatternPlayer = () => {
       padding: '20px',
       gap: '20px',
       ...raisedBorderStyle,
-      borderWidth: '3px'
+      borderWidth: '4px'
     }}>
       <KeySelection />
       <Divider />
