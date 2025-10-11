@@ -54,5 +54,5 @@ export const chordButtonStyle: React.CSSProperties = {
 export const buttonStyle: React.CSSProperties = {
   borderRadius: '3px',
   borderWidth: '1px',
-  ...raisedBorderStyle
+  ...raisedBorderStyle,
 }

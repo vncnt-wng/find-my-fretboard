@@ -11,7 +11,7 @@ const PatternPlayer = () => {
       backgroundColor: colours.panel, 
       borderRadius: '10px',
       display: 'grid',
-      gridTemplateColumns: '1fr 0fr 2fr 0fr 2fr',
+      gridTemplateColumns: '2fr 0fr 1fr 0fr 2fr',
       justifyContent: 'spaceBetween',
       alignItems: 'center',
       padding: '20px',
@@ -19,9 +19,9 @@ const PatternPlayer = () => {
       ...raisedBorderStyle,
       borderWidth: '4px'
     }}>
-      <KeySelection />
-      <Divider />
       <PatternSelection />
+      <Divider />
+      <KeySelection />
       <Divider />
       <Player />
     </div>

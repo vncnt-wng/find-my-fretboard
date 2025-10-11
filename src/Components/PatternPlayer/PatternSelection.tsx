@@ -5,18 +5,38 @@ import { setPlayerPattern } from "../Slices/playerSlice";
 import { ButtonGroup } from "./ButtonGroup";
 import { useState } from "react";
 import { buttonStyle, colours } from "../styles";
+import { PlayerType, playerTypes, setPlayerType } from "../Slices/playerTypeSlice";
+
+const scrollSelection: React.CSSProperties = { 
+  display: 'flex', 
+  flexDirection: 'column', 
+  overflow: 'scroll', 
+  height: '100%', 
+  flex: '1 1 auto', 
+  overflowY: 'auto'  
+}
+
+const selectButtonStyle: React.CSSProperties = {
+  ...buttonStyle,
+  textAlign: 'left',
+  width: '100%',
+}
 
 export const PatternSelection = () => {
-  const [patternType, setPatternType] = useState("scales")
+  const playerType = useSelector((state: RootState) => state.playerType.playerType)
+  const dispatch = useDispatch();
 
   return ( 
     <div style={{display: 'flex', flexDirection: 'column', height: '300px', gap: '5px'}}>
-      <ButtonGroup selected={patternType} setSelected={(s) => setPatternType(s)} values={['scales', 'chords', 'patterns']}/>
+      <ButtonGroup 
+        selected={playerType} 
+        setSelected={(s) => dispatch(setPlayerType(s as PlayerType))} values={playerTypes}
+      />
       {
-        patternType === 'scales'
+        playerType === 'scales'
           ? 
             (
-              <div style={{ display: 'flex', flexDirection: 'column', overflow: 'scroll', height: '100%', flex: '1 1 auto', overflowY: 'auto'  }}>
+              <div style={scrollSelection}>
                 {
                   Object.keys(scaleTypeToName).map(k => 
                     <Pattern scaleType={k}/>
@@ -24,12 +44,18 @@ export const PatternSelection = () => {
                 }
               </div>
             )
-          :
-            (
-              <div style={{ display: 'flex', flexDirection: 'column', overflow: 'scroll', height: '100%', flex: '1 1 auto', overflowY: 'auto'  }}>
-                coming soon...
+          : playerType === 'training games'
+            ? 
+              <div style={scrollSelection}>
+                <button style={selectButtonStyle}>notes</button>
+                <button style={selectButtonStyle}>intervals</button>
               </div>
-            )
+            :
+              (
+                <div style={{ display: 'flex', flexDirection: 'column', overflow: 'scroll', height: '100%', flex: '1 1 auto', overflowY: 'auto'  }}>
+                  coming soon...
+                </div>
+              )
       }
       
     </div>
@@ -52,14 +78,12 @@ export const Pattern = ({scaleType}: {scaleType: ScaleType}) => {
       <div style={{display: "flex"}}>
         <button 
           style={{
-            ...buttonStyle,
-            textAlign: 'left',
+            ...selectButtonStyle,
             backgroundColor: scaleType == pattern && mode ==0
               ? colours.selected
               : scaleType == pattern
                 ? colours.relatedMode
                 : '', 
-            width: '100%'
           }} 
           onClick={() => setPattern(scaleType)}
         >
