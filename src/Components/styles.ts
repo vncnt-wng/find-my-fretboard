@@ -54,6 +54,7 @@ export const boxStyle: React.CSSProperties = {
   borderStyle: 'solid',
   borderColor: colours.outline,
   borderRadius: '5px',
+  outline: 'none',
   backgroundColor: colours.buttonBackground
 }
 

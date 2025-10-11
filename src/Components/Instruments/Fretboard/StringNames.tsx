@@ -6,7 +6,8 @@ import { RootState } from '../../../app/store'
 import { setHeldNote, setSingleNote } from '../../Slices/notesSlice'
 import { PatternMarker } from '../PatternMarker'
 import { resetDefaultTurning, setCustomTuning } from '../../Slices/fretboardSettingsSlice'
-import { colours } from '../../styles'
+import { boxStyle, colours } from '../../styles'
+import StyledButton from '../../Buttons/Button'
 
 const stringSpacingStyle: CSSProperties = {
   display: 'flex',
@@ -31,8 +32,8 @@ const StringNames = () => {
             <EditingNotes setEditing={setEditing}/>
           : 
             <>
-              <div style={{position: 'absolute', top: '-40px', width: '100px'}}>
-                <button onClick={() => setEditing(b => !b)}>edit</button>  
+              <div style={{position: 'absolute', top: '-30px'}}>
+                <StyledButton text={'edit'} onClick={() => setEditing(b => !b)} selected={false}/>  
               </div>
               <div style={stringSpacingStyle}>
                 {
@@ -95,10 +96,10 @@ const EditingNotes = ({setEditing} : {setEditing: any}) => {
 
   return (
     <>
-      <div style={{position: 'absolute', top: '-40px', width: '200px'}}>
-        <button onClick={() => tryParseCustomTuning()}>set</button> 
-        <button onClick={() => resetToDefault()}>reset to default</button>  
-        <button onClick={() => setEditing(false)}>cancel</button>  
+      <div style={{position: 'absolute', top: '-30px', width: '250px', display: 'flex', gap: '3px'}}>
+        <StyledButton text={'set'} onClick={() => tryParseCustomTuning()} selected={false}/> 
+        <StyledButton text={'reset to default'} onClick={() => resetToDefault()} selected={false}/>  
+        <StyledButton text={'cancel'} onClick={() => setEditing(false)} selected={false}/>  
       </div>
       <div style={{...stringSpacingStyle, alignItems: 'start'}}>
         {
@@ -107,7 +108,13 @@ const EditingNotes = ({setEditing} : {setEditing: any}) => {
                 <div key={i} style={{  display: 'flex', alignItems: 'center', fontSize: '0.8rem', height: '0.5rem'}}>
                   <input 
                     onChange={e => changeEditingNote(e.target.value, i)}
-                    style={{ height: '0.8rem', width: '25px', textAlign: 'center', border: errorIndicies.includes(i) ? 'red solid 1px' : undefined}}
+                    style={{ 
+                      ...boxStyle,
+                      height: '0.8rem', 
+                      width: '25px', 
+                      textAlign: 'center', 
+                      border: errorIndicies.includes(i) ? 'red solid 1px' : '1px solid ' + colours.outline
+                    }}
                     value={note}
                   />
                 </div>

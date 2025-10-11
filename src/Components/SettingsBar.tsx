@@ -8,11 +8,13 @@ import { boxStyle, colours } from './styles';
 const settingStyle = {
   display: 'flex',
   alignItems: 'center',
-  gap: '5px'
+  gap: '5px',
+  height: '20px'
 }
 
 const checkboxStyle = {
   ...boxStyle,
+  paddingTop: '2px',
   margin: '0 0 0 1px'
 }
 
@@ -82,6 +84,11 @@ const SettingsBar = () => {
   )
 }
 
+const selectStyle ={
+  ...boxStyle,
+  paddingTop: '2px'
+}
+
 const StringInstrumentSettings = () => {
   const { stringInstrument: instrument, stringNum, constFretSpacing } = useSelector((state: RootState) => state.fretboardSettings);
   const stringRange = InstrumentToStringNumRange[instrument];
@@ -101,6 +108,7 @@ const StringInstrumentSettings = () => {
       <div style={settingStyle}>
         instrument:
         <select
+          style={selectStyle}
           value={instrument}
           name="numStrings"
           onChange={e => {
@@ -116,6 +124,7 @@ const StringInstrumentSettings = () => {
       <div style={settingStyle}>
         number of strings: 
         <select 
+          style={selectStyle}
           value={stringNum} 
           onChange={e => dispatch(setStringNum(Number(e.target.value)))} 
           name="numStrings"
